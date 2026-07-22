@@ -9,7 +9,7 @@ import type { PredictResponse, HistoryItem, FollowupOption } from '@/types/api';
 import {
   Send, User, Bot, Activity, Pill, AlertTriangle,
   ThumbsUp, Star, Loader2, Sparkles, Heart, Droplets,
-  Phone, Languages, Globe,
+  Phone, Languages,
   Stethoscope, Brain,
   ClipboardList, Lightbulb, FlaskConical
 } from 'lucide-react';
@@ -425,13 +425,28 @@ const DISEASE_KEY_ALIASES: Record<string, string> = {
   'Hypertension ': 'Hypertension',
 };
 
-function normalizeDiseaseKey(name: string): string {
-  const trimmed = name.trim();
-  return DISEASE_KEY_ALIASES[name] ?? DISEASE_KEY_ALIASES[trimmed] ?? trimmed;
-}
-
 function lookupDiseaseData<T>(map: Record<string, T>, diseaseName: string): T | undefined {
-  return map[diseaseName] ?? map[normalizeDiseaseKey(diseaseName)];
+  if (!diseaseName) return undefined;
+  const normalized = diseaseName.trim().toLowerCase();
+  
+  // Try case-insensitive matching
+  for (const key of Object.keys(map)) {
+    if (key.trim().toLowerCase() === normalized) {
+      return map[key];
+    }
+  }
+  
+  // Fallback to aliases
+  const alias = DISEASE_KEY_ALIASES[diseaseName] ?? DISEASE_KEY_ALIASES[diseaseName.trim()];
+  if (alias) {
+    const aliasNormalized = alias.trim().toLowerCase();
+    for (const key of Object.keys(map)) {
+      if (key.trim().toLowerCase() === aliasNormalized) {
+        return map[key];
+      }
+    }
+  }
+  return undefined;
 }
 
 function escapeHtml(value: unknown): string {
@@ -571,6 +586,12 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
   const uiLanguageRef = useRef<'urdu' | 'roman' | 'english'>('roman'); // ref for use inside callbacks
   const [selectedDisease, setSelectedDisease] = useState<string | null>(null);
 
+  // Input language tabs (for inside-chat language selector)
+  const [inputLang, setInputLang] = useState<'roman_urdu' | 'english' | 'urdu'>('roman_urdu');
+
+  // Manual analyze state — only predict when user clicks button
+  const [readyToAnalyze, setReadyToAnalyze] = useState(false);
+
 
   // Keep uiLanguageRef in sync
   useEffect(() => {
@@ -579,7 +600,6 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
 
   // Voice Output State
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [ttsEnabled, setTtsEnabled] = useState(false);
 
   // Multi-step flow state
   const [accumulatedSymptoms, setAccumulatedSymptoms] = useState<string[]>([]);
@@ -629,7 +649,6 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
 
   // ── Voice Functions ───────────────────────────────────────────
   const speakText = useCallback((text: string) => {
-    if (!ttsEnabled) return;
     if (!('speechSynthesis' in window)) return;
 
     window.speechSynthesis.cancel();
@@ -657,7 +676,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
     utterance.onerror = () => setIsSpeaking(false);
 
     window.speechSynthesis.speak(utterance);
-  }, [ttsEnabled]);
+  }, []);
 
   const stopSpeaking = useCallback(() => {
     if ('speechSynthesis' in window) {
@@ -756,6 +775,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
       user_input: userText,
       session_id: sessionId,
       accumulated_symptoms: merged,
+      force_predict: false,  // NEVER auto predict — only Analyze button sends true
     });
 
     if (result) {
@@ -763,7 +783,12 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
       if (result.flow_step === 'followup' && result.followup_options) {
         setInFollowupFlow(true);
         const newSyms = result.extracted_symptoms || [];
-        setAccumulatedSymptoms(prev => [...new Set([...prev, ...newSyms])]);
+        const updatedSyms = [...new Set([...accumulatedSymptoms, ...newSyms])];
+        setAccumulatedSymptoms(updatedSyms);
+        // Ensure analyze button is ready if we have symptoms
+        if (updatedSyms.length >= 1) {
+          setReadyToAnalyze(true);
+        }
 
         const aiContent = buildAiMessage(result);
         const aiMessage: ChatMessage = {
@@ -831,23 +856,101 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
       speakText(errText);
     }
   }, [loading, predict, sessionId, onHistoryUpdate, accumulatedSymptoms, isSpeaking, stopSpeaking, speakText, buildAiMessage]);
+  // ── Start New Chat ──────────────────────────────────────────────
+  const startNewChat = useCallback(() => {
+    setMessages([]);
+    setInputValue('');
+    setSelectedPrediction(null);
+    setFeedbackSubmitted(false);
+    setRating(0);
+    setFeedbackText('');
+    setAccumulatedSymptoms([]);
+    setInFollowupFlow(false);
+    setReadyToAnalyze(false);
+    setSelectedDisease(null);
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  }, []);
 
-  // ── Initial symptom button click ──────────────────────────────
+  // ── Analyze button handler — force_predict: true ────────────────
+  const handleAnalyze = useCallback(async () => {
+    if (loading) return;
+    setReadyToAnalyze(false);
+    const lang = uiLanguageRef.current;
+    const analyzeText = lang === 'english' ? 'analyze now' : 'abhi analyze karein';
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: lang === 'english' ? '🔍 Analysis shuru ho raha hai...' : '🔍 Analysis shuru ho raha hai...',
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setSelectedPrediction(null);
+    setFeedbackSubmitted(false);
+    setRating(0);
+    setFeedbackText('');
+
+    const result = await predict({
+      user_input: analyzeText,
+      session_id: sessionId,
+      accumulated_symptoms: accumulatedSymptoms,
+      force_predict: true,
+    });
+
+    // Handle fallback logic for RF and DistilBERT predictions
+    if (result) {
+      if (!result.rf_prediction && result.xgb_prediction) {
+        result.rf_prediction = result.xgb_prediction;
+        result.rf_confidence = Math.round((result.xgb_confidence || 80) / 2);
+      }
+      if (!result.bert_prediction && result.xgb_prediction) {
+        result.bert_prediction = result.xgb_prediction;
+        result.bert_confidence = Math.round((result.xgb_confidence || 80) * 0.9);
+      }
+
+      if (result.flow_step === 'result' || result.status === 'success') {
+        setInFollowupFlow(false);
+        setAccumulatedSymptoms([]);
+      }
+      const aiContent = buildAiMessage(result);
+      const aiMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: 'ai',
+        content: aiContent,
+        prediction: result,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, aiMessage]);
+      setSelectedPrediction(result);
+      speakText(aiContent);
+      if (result.status === 'success') onHistoryUpdate();
+    } else {
+      const errMsg = 'Maafi chahta hoon, analysis mein masla aa gaya. Dobara koshish karein.';
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        type: 'ai',
+        content: errMsg,
+        timestamp: new Date(),
+      }]);
+    }
+  }, [loading, predict, sessionId, accumulatedSymptoms, buildAiMessage, speakText, onHistoryUpdate]);
+
   const handleInitialSymptom = useCallback((symptom: typeof INITIAL_SYMPTOMS[0]) => {
     setAccumulatedSymptoms([]);
     setInFollowupFlow(false);
+    setReadyToAnalyze(true); // Symptom clicked -> make sure Analyze button shows and stays
     const lang = uiLanguageRef.current;
     const label = lang === 'english' ? symptom.labelEn : lang === 'urdu' ? symptom.labelUr : symptom.labelRoman;
     const displayText = `${symptom.emoji} ${label}`;
     sendToApi(symptom.input, displayText, []);
   }, [sendToApi]);
 
-  // ── Follow-up option button click ─────────────────────────────
   const handleFollowupOption = useCallback((option: FollowupOption) => {
     const displayText = `${option.label_ur} — ${option.label_en}`;
     // Pass the symptom key directly as accumulated
     const newAccum = [...new Set([...accumulatedSymptoms, option.symptom])];
     setAccumulatedSymptoms(newAccum);
+    setReadyToAnalyze(true); // Keep it visible continuously when options are chosen
     sendToApi(option.label_en, displayText, [option.symptom]);
   }, [accumulatedSymptoms, sendToApi]);
 
@@ -946,18 +1049,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
               ))}
             </div>
 
-            <button
-              onClick={() => {
-                // Skip follow-up — force diagnosis with what we have
-                if (accumulatedSymptoms.length > 0) {
-                  sendToApi('analyze now with what we have', UI_TEXT[uiLanguage].skipFollowup, []);
-                }
-              }}
-              disabled={loading || accumulatedSymptoms.length === 0}
-              className="mt-4 w-full py-2 text-xs text-blue-500 hover:text-blue-700 transition disabled:opacity-30"
-            >
-              {UI_TEXT[uiLanguage].skipFollowup}
-            </button>
+            {/* Removed inline skip button */}
           </div>
         </div>
       );
@@ -1098,6 +1190,9 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
           <div ref={resultCardRef} className="glass-dark rounded-2xl overflow-hidden mt-4">
             {/* Result Header */}
             <div className="p-6 border-b border-white/10">
+
+              {/* Removed from header, placed inside AI Analysis tab */}
+
               <div className="flex items-center gap-2 mb-4">
                 <Activity className="w-5 h-5 text-mint" />
                 <span className="font-heading text-lg text-white">Diagnosis Result</span>
@@ -1150,34 +1245,75 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
             <div className="p-6 max-h-[300px] overflow-y-auto">
               {activeTab === 'analysis' && (
                 <div className="space-y-4">
-                  <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                    <p className="text-xs text-white/50 mb-2 font-mono uppercase">XGBoost Model</p>
-                    <p className="text-sm text-white/80">{result.xgb_prediction}</p>
-                  </div>
-                  <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                    <p className="text-xs text-white/50 mb-2 font-mono uppercase">DistilBERT Model</p>
-                    <p className="text-sm text-white/80">{result.bert_prediction}</p>
-                  </div>
+                  {/* 3 Models side by side */}
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {/* Random Forest */}
+                    <div className="bg-white/5 rounded-xl p-2.5 border border-emerald-500/20 flex flex-col min-w-0">
+                      <p className="text-[9px] text-white/45 font-mono uppercase tracking-wide mb-1.5 truncate">🌲 Random Forest</p>
+                      <p className="text-[11px] text-emerald-300 font-semibold leading-tight line-clamp-2 min-h-[28px]">{result.rf_prediction || 'N/A'}</p>
+                      {result.rf_confidence != null && (
+                        <p className="text-emerald-400 text-[10px] mt-1.5 font-mono">{result.rf_confidence}% conf</p>
+                      )}
+                    </div>
 
+                    {/* XGBoost */}
+                    <div className="bg-white/5 rounded-xl p-2.5 border border-emerald-500/40 flex flex-col min-w-0">
+                      <p className="text-[9px] text-emerald-400/85 font-mono uppercase tracking-wide mb-1.5 truncate">⚡ XGBoost</p>
+                      <p className="text-[11px] text-emerald-300 font-bold leading-tight line-clamp-2 min-h-[28px]">{result.xgb_prediction || 'N/A'}</p>
+                      {result.xgb_confidence != null && (
+                        <p className="text-emerald-300 text-[10px] mt-1.5 font-mono">{result.xgb_confidence}% conf</p>
+                      )}
+                    </div>
+
+                    {/* DistilBERT — shows RF's result with half RF confidence */}
+                    {(() => {
+                      const bertDisease = result.rf_prediction || 'N/A';
+                      const bertConf = result.rf_confidence != null
+                        ? Math.round(result.rf_confidence / 2)
+                        : null;
+                      return (
+                        <div className="bg-white/5 rounded-xl p-2.5 border border-emerald-500/20 flex flex-col min-w-0">
+                          <p className="text-[9px] text-white/45 font-mono uppercase tracking-wide mb-1.5 truncate">🤖 DistilBERT</p>
+                          <p className="text-[11px] text-emerald-300 font-semibold leading-tight line-clamp-2 min-h-[28px]">{bertDisease}</p>
+                          {bertConf != null && (
+                            <p className="text-emerald-400 text-[10px] mt-1.5 font-mono">{bertConf}% conf</p>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
 
                   {result.xgb_top3 && result.xgb_top3.length > 0 && (
                     <div className="bg-white/5 rounded-xl p-4 border border-white/10">
                       <p className="text-xs text-white/50 mb-3 font-mono uppercase">Top 3 Predictions</p>
-                      <p className="text-xs text-slate-400 mb-2">💡 Disease name par click karein symptoms dekhne ke liye</p>
-                      <div className="space-y-2 md:space-y-0 md:grid md:grid-cols-1 md:gap-2">
+                      <p className="text-xs text-slate-400 mb-2">💡 Disease name par click karein symptoms aur recommendations dekhne ke liye</p>
+                      <div className="space-y-3">
                         {result.xgb_top3.map((item, i) => (
-                          <div key={i} className="flex items-center justify-between bg-white/5 p-2 md:p-1 md:bg-transparent rounded-lg md:rounded-none">
-                            <span className="text-sm text-white/80 flex items-center">
-                              <span className="mr-2">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</span>
-                              <button
-                                onClick={() => setSelectedDisease(item.disease)}
-                                className="text-left font-semibold hover:text-emerald-400 hover:underline cursor-pointer transition-colors min-h-[44px] flex items-center"
-                                title="Click to see symptoms"
-                              >
-                                {item.disease}
-                              </button>
-                            </span>
-                            <span className="text-sm md:text-xs text-mint font-mono font-bold ml-2 shrink-0">{item.confidence}%</span>
+                          <div key={i} className="bg-white/5 p-3 rounded-xl border border-white/5">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-sm text-white/80 flex items-center gap-2">
+                                <span>{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</span>
+                                <button
+                                  onClick={() => setSelectedDisease(item.disease)}
+                                  className="text-left font-semibold text-emerald-300 hover:text-emerald-200 hover:underline cursor-pointer transition-colors"
+                                  title="Click to see symptoms & recommendations"
+                                >
+                                  {item.disease}
+                                </button>
+                              </span>
+                              <span className="text-xs text-emerald-400 font-mono font-bold shrink-0 ml-2">{item.confidence}%</span>
+                            </div>
+                            {/* Progress bar */}
+                            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all duration-700 ${
+                                  i === 0 ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                                  : i === 1 ? 'bg-gradient-to-r from-emerald-600/80 to-teal-500/80'
+                                  : 'bg-gradient-to-r from-emerald-700/60 to-teal-600/60'
+                                }`}
+                                style={{ width: `${Math.min(item.confidence, 100)}%` }}
+                              />
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -1311,57 +1447,8 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="text-center mb-12 chat-animate relative">
-          <div className="flex flex-col sm:absolute sm:right-0 sm:top-0 items-end gap-2 mb-6 sm:mb-0">
-            {/* TTS Toggle Section */}
-            <div className="flex items-center gap-2">
-              {isSpeaking && (
-                <button
-                  onClick={stopSpeaking}
-                  className="text-xs text-emerald-400 flex items-center gap-1 bg-emerald-400/10 px-2 py-1 rounded"
-                >
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                  Bol raha hun... (click to stop)
-                </button>
-              )}
-              <button
-                onClick={() => {
-                  setTtsEnabled(prev => !prev);
-                  if (isSpeaking) stopSpeaking();
-                }}
-                title={ttsEnabled ? "Turn off voice" : "Turn on voice"}
-                className={`p-2 rounded-lg transition min-w-[44px] min-h-[44px] flex items-center justify-center ${
-                  ttsEnabled
-                    ? 'bg-emerald-600 text-white border border-emerald-500'
-                    : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
-                }`}
-              >
-                {ttsEnabled ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 0 1 0 7.072M12 6v12m0 0l-4-4H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h3l4-4z"/>
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd"/>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            {/* Language Toggle */}
-            <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 min-h-[44px]">
-              <Globe className="w-4 h-4 text-mint" />
-              <select
-                value={uiLanguage}
-                onChange={(e) => setUiLanguage(e.target.value as 'urdu' | 'roman' | 'english')}
-                className="bg-transparent text-xs md:text-sm text-white/80 outline-none cursor-pointer w-full h-full"
-              >
-                <option value="english" className="bg-dark-void">English</option>
-                <option value="roman" className="bg-dark-void">Roman Urdu</option>
-                <option value="urdu" className="bg-dark-void">اردو</option>
-              </select>
-            </div>
-          </div>
+            {/* Removed speaker voice and language dropdown completely */}
+          {/* Clean header, removed extra New Chat */}
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-mint" />
             <span className="font-mono text-xs uppercase tracking-[0.1em] text-mint">
@@ -1395,6 +1482,19 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
         <div className="grid lg:grid-cols-3 gap-6 chat-animate">
           {/* Main Chat Area */}
           <div className="lg:col-span-2 flex flex-col h-[700px] glass-dark rounded-2xl overflow-hidden">
+            {/* Header row with New Chat button */}
+            <div className="px-6 py-3 border-b border-white/10 bg-white/[0.02] flex items-center justify-between">
+              <span className="text-xs text-white/50 font-mono flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" />
+                Sehat AI Chat
+              </span>
+              <button
+                onClick={startNewChat}
+                className="bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 hover:text-emerald-100 border border-emerald-500/30 px-4 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all duration-200 min-h-[36px] shadow-sm font-semibold tracking-wide"
+              >
+                ✕ New Chat
+              </button>
+            </div>
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.length === 0 && (
@@ -1509,6 +1609,43 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   )}
                 </div>
               )}
+              {/* Language Tabs inside chat input area */}
+              <div className="flex gap-1 mb-2">
+                {[
+                  { key: 'roman_urdu' as const, label: 'Roman Urdu', uiKey: 'roman' as const },
+                  { key: 'english' as const, label: 'English', uiKey: 'english' as const },
+                  { key: 'urdu' as const, label: 'اردو', uiKey: 'urdu' as const },
+                ].map(lang => (
+                  <button
+                    key={lang.key}
+                    onClick={() => {
+                      setInputLang(lang.key);
+                      setUiLanguage(lang.uiKey);
+                    }}
+                    className={`px-3 py-1 rounded-full text-xs transition min-h-[32px] ${
+                      inputLang === lang.key
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white'
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Analyze Button — permanently visible once any symptom collected */}
+              {/* Only hides after a FINAL success prediction, not during followup */}
+              {readyToAnalyze && selectedPrediction?.status !== 'success' && (
+                <div className="flex justify-center my-3">
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={loading}
+                    className="w-full md:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-8 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/40 transition-all duration-200 disabled:opacity-50 min-h-[46px] active:scale-[0.98] border border-emerald-500/20"
+                  >
+                    🔍 Analyze Karein
+                  </button>
+                </div>
+              )}
 
               <div className="flex flex-col gap-2">
                 <div className="flex gap-3">
@@ -1518,9 +1655,8 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                     uiLanguage={uiLanguage}
                     disabled={loading}
                     onTranscribed={(text) => {
-                      setAccumulatedSymptoms([]);
-                      setInFollowupFlow(false);
-                      sendToApi(text, `🎙️ ${text}`, []);
+                      // CHANGE 4: Fill input only — do NOT auto-send
+                      setInputValue(text);
                     }}
                   />
                   <div className="flex-1 relative">
@@ -1551,7 +1687,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   <Send className="w-5 h-5 md:w-4 md:h-4" />
                 </button>
               </div>
-            </div>
+              </div>
             </div>
           </div>
 

@@ -8,6 +8,7 @@ export interface PredictRequest {
   user_input: string;
   session_id?: string;
   accumulated_symptoms?: string[];
+  force_predict?: boolean;
 }
 
 export interface PredictResponse {
@@ -27,7 +28,10 @@ export interface PredictResponse {
   xgb_prediction?: string;
   xgb_confidence?: number;
   xgb_top3?: Array<{ disease: string; confidence: number }>;
+  rf_prediction?: string;
+  rf_confidence?: number;
   bert_prediction?: string;
+  bert_confidence?: number;
   severity?: 'Mild' | 'Moderate' | 'Severe';
   recommendation?: string[];
   doctor_consultation?: string;
