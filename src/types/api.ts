@@ -1,6 +1,7 @@
 export interface FollowupOption {
   label_en: string;
   label_ur: string;
+  label_roman?: string;
   symptom: string;
 }
 
@@ -16,6 +17,7 @@ export interface PredictResponse {
   flow_step?: 'followup' | 'result' | null;
   followup_question?: string;
   followup_question_ur?: string;
+  followup_question_roman?: string;
   followup_options?: FollowupOption[];
 
   status: 'success' | 'insufficient_symptoms' | 'low_confidence';

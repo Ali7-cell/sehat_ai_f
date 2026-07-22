@@ -459,6 +459,7 @@ function escapeHtml(value: unknown): string {
 }
 
 // ─── Multilingual UI strings ─────────────────────────────────────────────────
+// ─── Multilingual UI strings ─────────────────────────────────────────────────
 const UI_TEXT = {
   english: {
     sectionBadge: 'AI Health Consultation',
@@ -495,13 +496,24 @@ const UI_TEXT = {
     submitFeedback: 'Submit Feedback',
     submitting: 'Submitting...',
     thankYou: 'Thank you for your feedback!',
+    chatTitle: 'Sehat AI Chat',
+    newChat: 'New Chat',
+    noSymptoms: 'No symptoms collected yet. Please select or type your symptoms first.',
+    unclearSymptoms: "I couldn't understand your symptoms. Please describe your symptoms in more detail (e.g., headache, stomach pain, fever, cough).",
+    noMoreSuggestions: "No more common symptoms found. Click the 'Analyze Now' button in the right panel to get the AI analysis result.",
+    lowConfidence: 'No specific disease could be identified from your symptoms. Please see the recommendations below.',
+    doctorConsultationSevere: '🚨 EMERGENCY: Please consult a doctor immediately.',
+    doctorConsultationModerate: '⚠️ Please consult a doctor soon.',
+    doctorConsultationMild: '✅ Rest and monitor symptoms.',
+    labTestRequired: 'Lab Test Required',
+    labTestRequiredHint: 'This disease cannot be confirmed by symptoms alone — a laboratory test is necessary.',
   },
   roman: {
     sectionBadge: 'AI Sehat Mashwara',
     heading1: 'Shuru Karein Apna',
     heading2: 'Sehat Check',
     subheading: 'Apne symptoms kisi bhi zaban mein batain. Hamara AI analyze karke rahnumai karega.',
-    disclaimer: '⚠️ Yeh tool sirf محدود بیماریوں کے لیے ہے aur kisi bhi professional medical diagnosis ki jagah nahi le sakta. Sahi ilaj ke liye qualified doctor se zaroor milein.',
+    disclaimer: '⚠️ Yeh tool sirf mahdood bimariyon ke liye hai aur kisi bhi professional medical diagnosis ki jagah nahi le sakta. Sahi ilaj ke liye qualified doctor se zaroor milein.',
     emptyTitle: 'Aaj main aapki kya madad kar sakta hoon?',
     emptySubtitle: 'Apne symptoms batain aur main AI models se analysis karke rahnumai karoonga.',
     symptomsBadge: '🗣️ Urdu / Roman Urdu / English Supported',
@@ -531,6 +543,17 @@ const UI_TEXT = {
     submitFeedback: 'Feedback Bhejein',
     submitting: 'Bheja ja raha hai...',
     thankYou: 'Shukriya aapke jawab ke liye!',
+    chatTitle: 'Sehat AI Chat',
+    newChat: 'Naya Chat',
+    noSymptoms: 'Koi symptoms collect nahi hue. Kripya pehle koi symptom select karein ya type karein.',
+    unclearSymptoms: "Mujhe aapke symptoms samajh nahi aaye. Kripya apni takleef thodi tafseel mein batain — maslan: 'sar dard', 'pait mein dard', 'bukhar', 'khansi'.",
+    noMoreSuggestions: "Mazeed koi aam symptom nahi mila. AI se mukammal nateeja hasil karne ke liye right panel se 'Analyze Karein' button par click karein.",
+    lowConfidence: 'Symptoms se koi wazeh bimari identify nahi hui. Niche diye gaye precautionary measures follow karein.',
+    doctorConsultationSevere: '🚨 EMERGENCY: Kripya foran doctor se rabta karein.',
+    doctorConsultationModerate: '⚠️ Kripya jald hi doctor se rabta karein.',
+    doctorConsultationMild: '✅ Aaram karein aur symptoms monitor karein.',
+    labTestRequired: 'Lab Test Zaroori Hai',
+    labTestRequiredHint: 'Yeh disease symptoms se confirm nahi hoti — laboratory test zaroori hai.',
   },
   urdu: {
     sectionBadge: 'AI صحت مشاورت',
@@ -567,13 +590,25 @@ const UI_TEXT = {
     submitFeedback: 'رائے بھیجیں',
     submitting: 'بھیجا جا رہا ہے...',
     thankYou: 'آپ کی رائے کا شکریہ!',
+    chatTitle: 'صحت اے آئی چیٹ',
+    newChat: 'نیا چیٹ',
+    noSymptoms: 'کوئی علامات جمع نہیں ہوئیں۔ براہ کرم پہلے کوئی علامت منتخب کریں یا لکھیں۔',
+    unclearSymptoms: "مجھے آپ کی علامات سمجھ نہیں آئیں۔ براہ کرم اپنی تکلیف تھوڑی تفصیل سے بتائیں — مثلاً: 'سر درد'، 'پیٹ میں درد'، 'بخار'، 'کھانسی'۔",
+    noMoreSuggestions: "مزید کوئی عام علامت نہیں ملی۔ AI سے مکمل نتیجہ حاصل کرنے کے لیے دائیں پینل سے 'تجزیہ کریں' بٹن پر کلک کریں۔",
+    lowConfidence: 'علامات سے کوئی واضح بیماری نہیں ملی۔ نیچے دی گئی احتیاطی تدابیر پر عمل کریں۔',
+    doctorConsultationSevere: '🚨 ہنگامی صورتحال: براہ کرم فوراً ڈاکٹر سے رجوع کریں۔',
+    doctorConsultationModerate: '⚠️ براہ کرم جلد ہی ڈاکٹر سے رجوع کریں۔',
+    doctorConsultationMild: '✅ آرام کریں اور علامات پر نظر رکھیں۔',
+    labTestRequired: 'لیبارٹری ٹیسٹ ضروری ہے',
+    labTestRequiredHint: 'یہ بیماری صرف علامات سے واضح نہیں ہوتی — لیبارٹری ٹیسٹ لازمی ہے۔',
   },
 };
 
 export default function ChatInterface({ historyItems: _historyItems, onHistoryUpdate }: ChatInterfaceProps) {
   const { sessionId } = useSession();
-  const { predict, submitFeedback, checkHealth, loading } = useApi();
+  const { predict, submitFeedback, checkHealth, getSymptomTranslations, loading } = useApi();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [symptomTranslations, setSymptomTranslations] = useState<Record<string, { en: string; ur: string; roman: string }> | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [selectedPrediction, setSelectedPrediction] = useState<PredictResponse | null>(null);
   const [rating, setRating] = useState(0);
@@ -585,6 +620,29 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
   const [uiLanguage, setUiLanguage] = useState<'urdu' | 'roman' | 'english'>('roman');
   const uiLanguageRef = useRef<'urdu' | 'roman' | 'english'>('roman'); // ref for use inside callbacks
   const [selectedDisease, setSelectedDisease] = useState<string | null>(null);
+
+  // Fetch symptom translations
+  useEffect(() => {
+    const fetchTrans = async () => {
+      const trans = await getSymptomTranslations();
+      if (trans) setSymptomTranslations(trans);
+    };
+    fetchTrans();
+  }, [getSymptomTranslations]);
+
+  const formatSymptom = useCallback((key: string): string => {
+    const cleanKey = key.toLowerCase().replace(/ /g, '_');
+    const trans = symptomTranslations?.[cleanKey];
+    if (trans) {
+      return uiLanguage === 'english'
+        ? trans.en
+        : uiLanguage === 'urdu'
+        ? trans.ur
+        : trans.roman;
+    }
+    // Fallback
+    return key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }, [symptomTranslations, uiLanguage]);
 
   // Input language tabs (for inside-chat language selector)
   const [inputLang, setInputLang] = useState<'roman_urdu' | 'english' | 'urdu'>('roman_urdu');
@@ -659,7 +717,11 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
     const urduVoice = voices.find(v => v.lang === 'ur-PK');
     const englishVoice = voices.find(v => v.lang.startsWith('en'));
 
-    if (urduVoice) {
+    const currentLang = uiLanguageRef.current;
+    if (currentLang === 'english' && englishVoice) {
+      utterance.voice = englishVoice;
+      utterance.lang = 'en-US';
+    } else if (urduVoice) {
       utterance.voice = urduVoice;
       utterance.lang = 'ur-PK';
     } else if (englishVoice) {
@@ -689,63 +751,76 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
   // ── Language-aware AI message builder ────────────────────────────
   const buildAiMessage = useCallback((result: any): string => {
     const lang = uiLanguage;
-    const sym = escapeHtml(result.extracted_symptoms?.slice(0, 3).join(', ') || '');
-    const allSym = escapeHtml(result.extracted_symptoms?.join(', ') || '');
+    const formatSymptomLocal = (key: string): string => {
+      const cleanKey = key.toLowerCase().replace(/ /g, '_');
+      const trans = symptomTranslations?.[cleanKey];
+      if (trans) {
+        return lang === 'english'
+          ? trans.en
+          : lang === 'urdu'
+          ? trans.ur
+          : trans.roman;
+      }
+      return key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    };
+
+    const sym = escapeHtml(result.extracted_symptoms?.slice(0, 3).map(formatSymptomLocal).join(', ') || '');
+    const allSym = escapeHtml(result.extracted_symptoms?.map(formatSymptomLocal).join(', ') || '');
     const prediction = escapeHtml(result.xgb_prediction);
-    const severity = escapeHtml(result.severity);
     const symptomCount = escapeHtml(result.symptom_count);
     const message = escapeHtml(result.message);
     const followupQuestion = escapeHtml(result.followup_question);
     const followupQuestionUr = escapeHtml(result.followup_question_ur);
+    const followupQuestionRoman = escapeHtml(result.followup_question_roman);
+
+    const translatedSeverity = lang === 'english'
+      ? result.severity
+      : lang === 'urdu'
+      ? (result.severity === 'Mild' ? 'ہلکی' : result.severity === 'Moderate' ? 'درمیانی' : 'شدید')
+      : (result.severity === 'Mild' ? 'Halki' : result.severity === 'Moderate' ? 'Darmiani' : 'Shadeed');
 
     if (result.flow_step === 'followup') {
-      // Use English followup question when English is selected
       if (lang === 'english') {
         return followupQuestion || followupQuestionUr || message || '';
+      } else if (lang === 'urdu') {
+        return followupQuestionUr || followupQuestion || message || '';
+      } else {
+        return followupQuestionRoman || followupQuestionUr || followupQuestion || message || '';
       }
-      // Urdu / Roman Urdu → use Urdu version
-      return followupQuestionUr || followupQuestion || message || '';
     }
 
     if (result.status === 'success') {
       if (lang === 'english') {
-        return `✅ Analysis complete!\n\n🦠 <strong>Possible Disease:</strong> ${prediction}\n📊 <strong>Severity:</strong> ${severity}\n🔍 <strong>Detected Symptoms:</strong> ${sym}\n\nCheck the right panel for full details.`;
+        return `✅ Analysis complete!\n\n🦠 <strong>Possible Disease:</strong> ${prediction}\n📊 <strong>Severity:</strong> ${translatedSeverity}\n🔍 <strong>Detected Symptoms:</strong> ${sym}\n\nCheck the right panel for full details.`;
       } else if (lang === 'urdu') {
-        return `✅ تجزیہ مکمل ہوا!\n\n🦠 <strong>ممکنہ بیماری:</strong> ${prediction}\n📊 <strong>شدت:</strong> ${severity}\n🔍 <strong>علامات:</strong> ${sym}\n\nمکمل تفصیل کے لیے دائیں پینل چیک کریں۔`;
+        return `✅ تجزیہ مکمل ہوا!\n\n🦠 <strong>ممکنہ بیماری:</strong> ${prediction}\n📊 <strong>شدت:</strong> ${translatedSeverity}\n🔍 <strong>علامات:</strong> ${sym}\n\nمکمل تفصیل کے لیے دائیں پینل چیک کریں۔`;
       } else {
-        return `✅ Analysis mukammal hua!\n\n🦠 <strong>Possible Disease:</strong> ${prediction}\n📊 <strong>Severity:</strong> ${severity}\n🔍 <strong>Detected Symptoms:</strong> ${sym}\n\nSahi nateeja dekhne ke liye dayen panel mein details check karein.`;
+        return `✅ Analysis mukammal hua!\n\n🦠 <strong>Possible Disease:</strong> ${prediction}\n📊 <strong>Severity:</strong> ${translatedSeverity}\n🔍 <strong>Detected Symptoms:</strong> ${sym}\n\nSahi nateeja dekhne ke liye dayen panel mein details check karein.`;
       }
     }
 
     if (result.status === 'low_confidence') {
-      if (lang === 'english') {
-        return `🔍 ${symptomCount} symptom(s) detected but no specific disease clearly identified.\n\nYour symptoms: <strong>${allSym}</strong>\n\nPlease follow the precautionary measures below.`;
-      } else if (lang === 'urdu') {
-        return `🔍 ${symptomCount} علامات پائی گئیں لیکن کوئی مخصوص بیماری واضح نہیں ہوئی۔\n\nآپ کی علامات: <strong>${allSym}</strong>\n\nنیچے دیے گئے احتیاطی تدابیر ضرور اپنائیں۔`;
-      } else {
-        return `🔍 ${symptomCount} symptom(s) detect hue lekin koi specific bimari clearly identify nahi hui.\n\nAapke symptoms: <strong>${allSym}</strong>\n\nNeeche diye gaye precautionary measures zaroor follow karein.`;
-      }
+      const t = UI_TEXT[lang];
+      return `🔍 ${symptomCount} ${lang === 'english' ? 'symptom(s) detected' : lang === 'urdu' ? 'علامات پائی گئیں' : 'symptom(s) detect hue'} but ${lang === 'english' ? 'no specific disease clearly identified' : lang === 'urdu' ? 'کوئی مخصوص بیماری واضح نہیں ہوئی' : 'koi specific bimari clearly identify nahi hui'}.\n\n${lang === 'english' ? 'Your symptoms' : lang === 'urdu' ? 'آپ کی علامات' : 'Aapke symptoms'}: <strong>${allSym}</strong>\n\n${t.lowConfidence}`;
     }
 
     if (result.status === 'insufficient_symptoms') {
-      if (lang === 'english') {
-        return message || 'Please describe your symptoms in more detail so I can analyze properly.';
-      } else if (lang === 'urdu') {
-        return message || 'براہ کرم اپنی علامات تفصیل سے بتائیں تاکہ میں درست تجزیہ کر سکوں۔';
-      } else {
-        return message || 'Kripya apne symptoms thodi tafseel mein batain taake main sahi analysis kar sakoon.';
+      const t = UI_TEXT[lang];
+      if (result.extracted_symptoms?.length === 0) {
+        return t.unclearSymptoms;
       }
+      return t.noMoreSuggestions;
     }
 
     // Fallback / generic message
     if (lang === 'english') {
-      return message || "I couldn't understand your symptoms. Please describe your condition in more detail.";
+      return "I couldn't understand your symptoms. Please describe your condition in more detail.";
     } else if (lang === 'urdu') {
-      return message || 'مجھے آپ کی علامات سمجھ نہیں آئیں۔ براہ کرم اپنی تکلیف تھوڑی تفصیل سے بتائیں۔';
+      return 'مجھے آپ کی علامات سمجھ نہیں آئیں۔ براہ کرم اپنی تکلیف تھوڑی تفصیل سے بتائیں۔';
     } else {
-      return message || 'Mujhe aapke symptoms samajh nahi aaye. Kripya apni takleef thodi tafseel mein batain.';
+      return 'Mujhe aapke symptoms samajh nahi aaye. Kripya apni takleef thodi tafseel mein batain.';
     }
-  }, [uiLanguage]);
+  }, [uiLanguage, symptomTranslations]);
 
   // ── Core send function ──────────────────────────────────────────
   const sendToApi = useCallback(async (
@@ -946,7 +1021,12 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
   }, [sendToApi]);
 
   const handleFollowupOption = useCallback((option: FollowupOption) => {
-    const displayText = `${option.label_ur} — ${option.label_en}`;
+    const lang = uiLanguageRef.current;
+    const displayText = lang === 'english'
+      ? option.label_en
+      : lang === 'urdu'
+      ? option.label_ur
+      : (option.label_roman || option.label_en);
     // Pass the symptom key directly as accumulated
     const newAccum = [...new Set([...accumulatedSymptoms, option.symptom])];
     setAccumulatedSymptoms(newAccum);
@@ -1014,22 +1094,11 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
               <h3 className="font-semibold text-emerald-800 dark:text-emerald-300 text-base">
                 {uiLanguage === 'english'
                   ? (result.followup_question || result.followup_question_ur)
-                  : (result.followup_question_ur || result.followup_question)}
+                  : uiLanguage === 'urdu'
+                  ? (result.followup_question_ur || result.followup_question)
+                  : (result.followup_question_roman || result.followup_question_ur || result.followup_question)}
               </h3>
             </div>
-            {uiLanguage === 'english' ? (
-              result.followup_question_ur && (
-                <p className="text-emerald-600 dark:text-emerald-400 text-xs mb-4 italic">
-                  {result.followup_question_ur}
-                </p>
-              )
-            ) : (
-              result.followup_question && (
-                <p className="text-emerald-600 dark:text-emerald-400 text-xs mb-4 italic">
-                  {result.followup_question}
-                </p>
-              )
-            )}
 
             {/* Detected so far */}
             {result.extracted_symptoms && result.extracted_symptoms.length > 0 && (
@@ -1038,7 +1107,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                 <div className="flex flex-wrap gap-2">
                   {result.extracted_symptoms.map(s => (
                     <span key={s} className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">
-                      {s.replace(/_/g, ' ')}
+                      {formatSymptom(s)}
                     </span>
                   ))}
                 </div>
@@ -1055,8 +1124,9 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   disabled={loading}
                   className="w-full text-left px-4 py-3 rounded-xl bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-800/40 dark:hover:bg-emerald-700/60 text-emerald-900 dark:text-emerald-100 transition-all duration-200 border border-emerald-200 dark:border-emerald-600 disabled:opacity-50"
                 >
-                  <span className="font-medium text-sm block">{opt.label_ur}</span>
-                  <span className="text-xs text-emerald-600 dark:text-emerald-300">{opt.label_en}</span>
+                  <span className="font-medium text-sm block">
+                    {uiLanguage === 'english' ? opt.label_en : uiLanguage === 'urdu' ? opt.label_ur : (opt.label_roman || opt.label_en)}
+                  </span>
                 </button>
               ))}
             </div>
@@ -1069,6 +1139,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
 
     // ── INSUFFICIENT_SYMPTOMS STATE ───────────────────────────────
     if (result.status === 'insufficient_symptoms') {
+      const hasSymptoms = result.extracted_symptoms?.length > 0;
       return (
         <div className="border border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-5">
           <div className="flex items-center gap-2 mb-3">
@@ -1077,34 +1148,18 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
               {UI_TEXT[uiLanguage].moreSymptoms}
             </h3>
           </div>
-          <p className="text-yellow-700 dark:text-yellow-400 mb-4">{result.message}</p>
+          <p className="text-yellow-700 dark:text-yellow-400 mb-4">
+            {hasSymptoms ? UI_TEXT[uiLanguage].noMoreSuggestions : UI_TEXT[uiLanguage].noSymptoms}
+          </p>
 
-          {result.extracted_symptoms?.length > 0 && (
+          {hasSymptoms && (
             <div className="mb-4">
               <p className="text-sm font-medium text-yellow-600 mb-2">{UI_TEXT[uiLanguage].symptomsWording}</p>
               <div className="flex flex-wrap gap-2">
                 {result.extracted_symptoms.map(s => (
                   <span key={s} className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
-                    {s.replace(/_/g, ' ')}
+                    {formatSymptom(s)}
                   </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {result.suggestions && result.suggestions.length > 0 && (
-            <div>
-              <p className="text-sm font-medium text-yellow-600 mb-2">{UI_TEXT[uiLanguage].suggestions}</p>
-              <div className="flex flex-wrap gap-2">
-                {result.suggestions.map((s, i) => (
-                  <button key={i}
-                    onClick={() => {
-                      const stripped = s.replace('Kya aapko ', '').replace(' bhi hai?', '').replace(' bhi ho rahi hai?', '');
-                      setInputValue(prev => prev ? prev + ' ' + stripped : stripped);
-                    }}
-                    className="bg-yellow-200 hover:bg-yellow-300 text-yellow-900 text-sm px-3 py-1 rounded-full transition">
-                    + {s}
-                  </button>
                 ))}
               </div>
             </div>
@@ -1123,15 +1178,15 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
               {UI_TEXT[uiLanguage].symptomsUnclear}
             </h3>
           </div>
-          <p className="text-orange-700 dark:text-orange-400 mb-4">{result.message}</p>
+          <p className="text-orange-700 dark:text-orange-400 mb-4">{UI_TEXT[uiLanguage].lowConfidence}</p>
 
           {result.extracted_symptoms?.length > 0 && (
             <div className="mb-4">
-              <p className="text-sm font-medium mb-2">Detect kiye gaye symptoms:</p>
+              <p className="text-sm font-medium mb-2">{UI_TEXT[uiLanguage].detectedSoFar}</p>
               <div className="flex flex-wrap gap-2">
                 {result.extracted_symptoms.map(s => (
                   <span key={s} className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
-                    {s.replace(/_/g, ' ')}
+                    {formatSymptom(s)}
                   </span>
                 ))}
               </div>
@@ -1147,7 +1202,9 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
           )}
 
           <p className="mt-4 text-xs text-orange-600 border-t border-orange-200 pt-3">
-            {result.disclaimer}
+            {uiLanguage === 'english' ? '⚠️ This tool is limited to specific diseases and cannot replace professional medical diagnosis.' :
+             uiLanguage === 'urdu' ? '⚠️ یہ ٹول صرف محدود بیماریوں کے لیے ہے اور پیشہ ورانہ طبی تشخیص کی جگہ نہیں لے سکتا۔' :
+             '⚠️ Yeh tool sirf mahdood bimariyon ke liye hai aur kisi professional medical diagnosis ki jagah nahi le sakta.'}
           </p>
         </div>
       );
@@ -1163,7 +1220,11 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
               ${result.severity === 'Mild' ? 'bg-emerald-100 text-emerald-800' :
                 result.severity === 'Moderate' ? 'bg-amber-100 text-amber-800' :
                 'bg-red-100 text-red-800 animate-pulse'}`}>
-              {result.severity === 'Severe' ? '🚨' : result.severity === 'Moderate' ? '⚠️' : '✅'} {result.severity}
+              {result.severity === 'Severe' ? '🚨' : result.severity === 'Moderate' ? '⚠️' : '✅'} {
+                uiLanguage === 'english' ? result.severity :
+                uiLanguage === 'urdu' ? (result.severity === 'Mild' ? 'ہلکی' : result.severity === 'Moderate' ? 'درمیانی' : 'شدید') :
+                (result.severity === 'Mild' ? 'Halki' : result.severity === 'Moderate' ? 'Darmiani' : 'Shadeed')
+              }
             </span>
           </div>
 
@@ -1172,11 +1233,24 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
             <div className="border border-purple-400 bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <FlaskConical className="w-4 h-4 text-purple-600" />
-                <span className="text-sm font-semibold text-purple-800 dark:text-purple-300">Lab Test Required</span>
+                <span className="text-sm font-semibold text-purple-800 dark:text-purple-300">
+                  {UI_TEXT[uiLanguage].labTestRequired}
+                </span>
               </div>
-              <p className="text-purple-700 dark:text-purple-400 text-sm">{result.test_recommendation}</p>
+              <p className="text-purple-700 dark:text-purple-400 text-sm">
+                {(() => {
+                  const disease = result.xgb_prediction || '';
+                  if (uiLanguage === 'english') {
+                    return `Recommended Lab Test: Complete Blood Count (CBC) / specific screening tests for ${disease} confirmation.`;
+                  } else if (uiLanguage === 'urdu') {
+                    return `تجویز کردہ ٹیسٹ: مکمل خون کا ٹیسٹ (CBC) / ${disease} کی تصدیق کے لیے مخصوص تشخیصی ٹیسٹ۔`;
+                  } else {
+                    return `Recommended Lab Test: Complete Blood Count (CBC) / specific screening tests for ${disease} ki tasdeeq ke liye.`;
+                  }
+                })()}
+              </p>
               <p className="text-purple-500 dark:text-purple-500 text-xs mt-1 italic">
-                Yeh disease symptoms se confirm nahi hoti — laboratory test zaroori hai.
+                {UI_TEXT[uiLanguage].labTestRequiredHint}
               </p>
             </div>
           )}
@@ -1193,7 +1267,9 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                 result.severity === 'Moderate' ? 'text-amber-700 dark:text-amber-300' :
                 'text-emerald-700 dark:text-emerald-300'
               }`}>
-                {result.doctor_consultation}
+                {result.severity === 'Severe' ? UI_TEXT[uiLanguage].doctorConsultationSevere :
+                 result.severity === 'Moderate' ? UI_TEXT[uiLanguage].doctorConsultationModerate :
+                 UI_TEXT[uiLanguage].doctorConsultationMild}
               </p>
             </div>
           )}
@@ -1497,13 +1573,13 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
             <div className="px-6 py-3 border-b border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.02] flex items-center justify-between">
               <span className="text-xs text-gray-500 dark:text-white/50 font-mono flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#10a37f] dark:bg-emerald animate-pulse" />
-                Sehat AI Chat
+                {UI_TEXT[uiLanguage].chatTitle}
               </span>
               <button
                 onClick={startNewChat}
                 className="bg-[#10a37f]/08 hover:bg-[#10a37f]/15 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-[#10a37f] dark:text-emerald-300 dark:hover:text-emerald-100 border border-[#10a37f]/20 dark:border-emerald-500/30 px-4 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all duration-200 min-h-[36px] shadow-sm font-semibold tracking-wide hover:shadow-md"
               >
-                New Chat
+                {UI_TEXT[uiLanguage].newChat}
               </button>
             </div>
             {/* Messages Area */}
@@ -1612,7 +1688,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   <span className="text-xs text-gray-400 dark:text-white/30">{UI_TEXT[uiLanguage].collectedLabel}</span>
                   {accumulatedSymptoms.slice(0, 4).map(s => (
                     <span key={s} className="text-xs bg-[#10a37f]/10 dark:bg-emerald/10 text-[#10a37f] dark:text-emerald px-2 py-0.5 rounded-full border border-[#10a37f]/20 dark:border-emerald/20">
-                      {s.replace(/_/g, ' ')}
+                      {formatSymptom(s)}
                     </span>
                   ))}
                   {accumulatedSymptoms.length > 4 && (

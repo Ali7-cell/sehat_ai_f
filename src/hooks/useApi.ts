@@ -98,5 +98,16 @@ export function useApi() {
     []
   );
 
-  return { predict, submitFeedback, getHistory, checkHealth, transcribeAudio, loading, error };
+  const getSymptomTranslations = useCallback(async (): Promise<Record<string, { en: string; ur: string; roman: string }> | null> => {
+    try {
+      const res = await fetch(`${API_BASE}/predict/translations`, { method: 'GET' });
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
+      return await res.json();
+    } catch (err: any) {
+      console.error('Failed to load translations', err);
+      return null;
+    }
+  }, []);
+
+  return { predict, submitFeedback, getHistory, checkHealth, transcribeAudio, getSymptomTranslations, loading, error };
 }
