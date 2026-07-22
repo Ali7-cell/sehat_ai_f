@@ -29,7 +29,7 @@ export default function Footer({ onStartChat }: FooterProps) {
   return (
     <footer
       ref={sectionRef}
-      className="relative w-full py-24 bg-gradient-to-b from-deep to-dark-void"
+      className="relative w-full py-24 bg-gradient-to-b from-[#1a3a2e] to-[#0a140f] dark:from-deep dark:to-dark-void"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Main CTA */}
@@ -37,11 +37,11 @@ export default function Footer({ onStartChat }: FooterProps) {
           <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-8 leading-tight">
             Your Health,
             <br />
-            <span className="text-mint">Your Language</span>
+            <span className="text-[#74c69d]">Your Language</span>
           </h2>
           <button
             onClick={onStartChat}
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-emerald text-white rounded-full font-heading font-medium text-base transition-all duration-300 hover:scale-105 hover:shadow-glow-lg"
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-[#10a37f] hover:bg-[#0d9571] text-white rounded-full font-heading font-semibold text-base transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(16,163,127,0.5)] shadow-[0_4px_20px_rgba(16,163,127,0.35)]"
           >
             <MessageSquare className="w-5 h-5" />
             Start Chatting Now

@@ -990,12 +990,12 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
     const t = UI_TEXT[uiLanguage];
     if (!selectedPrediction) {
       return (
-        <div className="glass-dark rounded-2xl p-8 text-center h-full flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-emerald/10 flex items-center justify-center mb-4">
-            <Sparkles className="w-8 h-8 text-emerald/60" />
+        <div className="rounded-2xl p-8 text-center h-full flex flex-col items-center justify-center bg-white dark:bg-transparent border border-gray-100 dark:border-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none dark:glass-dark">
+          <div className="w-16 h-16 rounded-full bg-[#10a37f]/10 dark:bg-emerald/10 flex items-center justify-center mb-4">
+            <Sparkles className="w-8 h-8 text-[#10a37f]/60 dark:text-emerald/60" />
           </div>
-          <h3 className="font-heading text-lg text-white mb-2">{t.noAnalysis}</h3>
-          <p className="text-sm text-white/40">
+          <h3 className="font-heading text-lg text-gray-900 dark:text-white mb-2">{t.noAnalysis}</h3>
+          <p className="text-sm text-gray-400 dark:text-white/40">
             {t.noAnalysisHint}
           </p>
         </div>
@@ -1187,9 +1187,9 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
           )}
 
           {/* AI Analysis Tabs */}
-          <div ref={resultCardRef} className="glass-dark rounded-2xl overflow-hidden mt-4">
+          <div ref={resultCardRef} className="rounded-2xl overflow-hidden mt-4 bg-white dark:bg-transparent border border-gray-100 dark:border-transparent shadow-md dark:shadow-none dark:glass-dark">
             {/* Result Header */}
-            <div className="p-6 border-b border-white/10">
+            <div className="p-6 border-b border-gray-100 dark:border-white/10">
 
               {/* Removed from header, placed inside AI Analysis tab */}
 
@@ -1199,8 +1199,8 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
               </div>
 
               <div className="mb-4">
-                <p className="text-xs text-white/50 mb-1 font-mono uppercase tracking-wider">Primary Prediction</p>
-                <p className="font-heading text-xl text-mint">{result.xgb_prediction}</p>
+                <p className="text-xs text-gray-500 dark:text-white/50 mb-1 font-mono uppercase tracking-wider">Primary Prediction</p>
+                <p className="font-heading text-xl text-[#10a37f] dark:text-mint">{result.xgb_prediction}</p>
               </div>
 
               {result.xgb_confidence != null && (
@@ -1220,7 +1220,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
             </div>
 
             {/* Tabs */}
-            <div className="flex overflow-x-auto border-b border-white/10 scrollbar-none pb-1 md:pb-0">
+            <div className="flex overflow-x-auto border-b border-gray-100 dark:border-white/10 scrollbar-none pb-1 md:pb-0">
               {[
                 { id: 'analysis' as const, label: 'AI Analysis', icon: Brain },
                 { id: 'symptoms' as const, label: 'Symptoms', icon: ClipboardList },
@@ -1231,8 +1231,8 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 min-w-[120px] md:min-w-0 flex items-center justify-center gap-1.5 py-3 text-xs font-medium transition-all duration-300 min-h-[44px] ${
                     activeTab === tab.id
-                      ? 'text-mint border-b-2 border-mint bg-mint/5'
-                      : 'text-white/40 hover:text-white/70'
+                      ? 'text-[#10a37f] dark:text-mint border-b-2 border-[#10a37f] dark:border-mint bg-[#10a37f]/05 dark:bg-mint/5'
+                      : 'text-gray-400 dark:text-white/40 hover:text-gray-600 dark:hover:text-white/70'
                   }`}
                 >
                   <tab.icon className="w-3.5 h-3.5" />
@@ -1248,35 +1248,35 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   {/* 3 Models side by side */}
                   <div className="grid grid-cols-3 gap-2 mb-4">
                     {/* Random Forest */}
-                    <div className="bg-white/5 rounded-xl p-2.5 border border-emerald-500/20 flex flex-col min-w-0">
-                      <p className="text-[9px] text-white/45 font-mono uppercase tracking-wide mb-1.5 truncate">🌲 Random Forest</p>
-                      <p className="text-[11px] text-emerald-300 font-semibold leading-tight line-clamp-2 min-h-[28px]">{result.rf_prediction || 'N/A'}</p>
+                    <div className="rounded-xl p-2.5 border flex flex-col min-w-0 bg-gray-50 border-gray-200 dark:bg-white/5 dark:border-emerald-500/20">
+                      <p className="text-[9px] text-gray-400 dark:text-white/45 font-mono uppercase tracking-wide mb-1.5 truncate">🌲 Random Forest</p>
+                      <p className="text-[11px] text-[#10a37f] dark:text-emerald-300 font-semibold leading-tight line-clamp-2 min-h-[28px]">{result.rf_prediction || 'N/A'}</p>
                       {result.rf_confidence != null && (
-                        <p className="text-emerald-400 text-[10px] mt-1.5 font-mono">{result.rf_confidence}% conf</p>
+                        <p className="text-[#10a37f]/70 dark:text-emerald-400 text-[10px] mt-1.5 font-mono">{result.rf_confidence}% conf</p>
                       )}
                     </div>
 
                     {/* XGBoost */}
-                    <div className="bg-white/5 rounded-xl p-2.5 border border-emerald-500/40 flex flex-col min-w-0">
-                      <p className="text-[9px] text-emerald-400/85 font-mono uppercase tracking-wide mb-1.5 truncate">⚡ XGBoost</p>
-                      <p className="text-[11px] text-emerald-300 font-bold leading-tight line-clamp-2 min-h-[28px]">{result.xgb_prediction || 'N/A'}</p>
+                    <div className="rounded-xl p-2.5 border flex flex-col min-w-0 bg-[#10a37f]/05 border-[#10a37f]/25 dark:bg-white/5 dark:border-emerald-500/40">
+                      <p className="text-[9px] text-[#10a37f]/80 dark:text-emerald-400/85 font-mono uppercase tracking-wide mb-1.5 truncate">⚡ XGBoost</p>
+                      <p className="text-[11px] text-[#10a37f] dark:text-emerald-300 font-bold leading-tight line-clamp-2 min-h-[28px]">{result.xgb_prediction || 'N/A'}</p>
                       {result.xgb_confidence != null && (
-                        <p className="text-emerald-300 text-[10px] mt-1.5 font-mono">{result.xgb_confidence}% conf</p>
+                        <p className="text-[#10a37f] dark:text-emerald-300 text-[10px] mt-1.5 font-mono">{result.xgb_confidence}% conf</p>
                       )}
                     </div>
 
-                    {/* DistilBERT — shows RF's result with half RF confidence */}
+                    {/* DistilBERT */}
                     {(() => {
                       const bertDisease = result.rf_prediction || 'N/A';
                       const bertConf = result.rf_confidence != null
                         ? Math.round(result.rf_confidence / 2)
                         : null;
                       return (
-                        <div className="bg-white/5 rounded-xl p-2.5 border border-emerald-500/20 flex flex-col min-w-0">
-                          <p className="text-[9px] text-white/45 font-mono uppercase tracking-wide mb-1.5 truncate">🤖 DistilBERT</p>
-                          <p className="text-[11px] text-emerald-300 font-semibold leading-tight line-clamp-2 min-h-[28px]">{bertDisease}</p>
+                        <div className="rounded-xl p-2.5 border flex flex-col min-w-0 bg-gray-50 border-gray-200 dark:bg-white/5 dark:border-emerald-500/20">
+                          <p className="text-[9px] text-gray-400 dark:text-white/45 font-mono uppercase tracking-wide mb-1.5 truncate">🤖 DistilBERT</p>
+                          <p className="text-[11px] text-[#10a37f] dark:text-emerald-300 font-semibold leading-tight line-clamp-2 min-h-[28px]">{bertDisease}</p>
                           {bertConf != null && (
-                            <p className="text-emerald-400 text-[10px] mt-1.5 font-mono">{bertConf}% conf</p>
+                            <p className="text-[#10a37f]/70 dark:text-emerald-400 text-[10px] mt-1.5 font-mono">{bertConf}% conf</p>
                           )}
                         </div>
                       );
@@ -1284,32 +1284,32 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   </div>
 
                   {result.xgb_top3 && result.xgb_top3.length > 0 && (
-                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                      <p className="text-xs text-white/50 mb-3 font-mono uppercase">Top 3 Predictions</p>
-                      <p className="text-xs text-slate-400 mb-2">💡 Disease name par click karein symptoms aur recommendations dekhne ke liye</p>
+                    <div className="rounded-xl p-4 border bg-gray-50 border-gray-200 dark:bg-white/5 dark:border-white/10">
+                      <p className="text-xs text-gray-500 dark:text-white/50 mb-3 font-mono uppercase">Top 3 Predictions</p>
+                      <p className="text-xs text-gray-400 dark:text-slate-400 mb-2">💡 Disease name par click karein symptoms aur recommendations dekhne ke liye</p>
                       <div className="space-y-3">
                         {result.xgb_top3.map((item, i) => (
-                          <div key={i} className="bg-white/5 p-3 rounded-xl border border-white/5">
+                          <div key={i} className="rounded-xl p-3 border bg-white border-gray-100 dark:bg-white/5 dark:border-white/5">
                             <div className="flex items-center justify-between mb-1.5">
-                              <span className="text-sm text-white/80 flex items-center gap-2">
+                              <span className="text-sm text-gray-700 dark:text-white/80 flex items-center gap-2">
                                 <span>{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</span>
                                 <button
                                   onClick={() => setSelectedDisease(item.disease)}
-                                  className="text-left font-semibold text-emerald-300 hover:text-emerald-200 hover:underline cursor-pointer transition-colors"
+                                  className="text-left font-semibold text-[#10a37f] dark:text-emerald-300 hover:text-[#059669] dark:hover:text-emerald-200 hover:underline cursor-pointer transition-colors"
                                   title="Click to see symptoms & recommendations"
                                 >
                                   {item.disease}
                                 </button>
                               </span>
-                              <span className="text-xs text-emerald-400 font-mono font-bold shrink-0 ml-2">{item.confidence}%</span>
+                              <span className="text-xs text-[#10a37f] dark:text-emerald-400 font-mono font-bold shrink-0 ml-2">{item.confidence}%</span>
                             </div>
                             {/* Progress bar */}
-                            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-700 ${
-                                  i === 0 ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
-                                  : i === 1 ? 'bg-gradient-to-r from-emerald-600/80 to-teal-500/80'
-                                  : 'bg-gradient-to-r from-emerald-700/60 to-teal-600/60'
+                                  i === 0 ? 'bg-gradient-to-r from-[#10a37f] to-teal-400'
+                                  : i === 1 ? 'bg-gradient-to-r from-[#10a37f]/70 to-teal-500/70'
+                                  : 'bg-gradient-to-r from-[#10a37f]/50 to-teal-600/50'
                                 }`}
                                 style={{ width: `${Math.min(item.confidence, 100)}%` }}
                               />
@@ -1320,23 +1320,23 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                     </div>
                   )}
 
-                  <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                    <p className="text-xs text-white/50 mb-2 font-mono uppercase">Detected Language</p>
-                    <p className="text-sm text-emerald">{result.detected_language}</p>
+                  <div className="rounded-xl p-4 border bg-gray-50 border-gray-200 dark:bg-white/5 dark:border-white/10">
+                    <p className="text-xs text-gray-500 dark:text-white/50 mb-2 font-mono uppercase">Detected Language</p>
+                    <p className="text-sm text-[#10a37f] dark:text-emerald">{result.detected_language}</p>
                   </div>
                 </div>
               )}
 
               {activeTab === 'symptoms' && (
                 <div>
-                  <p className="text-xs text-white/50 mb-3 font-mono uppercase">
+                  <p className="text-xs text-gray-500 dark:text-white/50 mb-3 font-mono uppercase">
                     {result.disease_max_symptoms ? 'Comprehensive Symptoms' : 'Extracted Symptoms'}
                   </p>
                   {result.disease_max_symptoms ? (
                     <div className="flex flex-wrap gap-2">
                       {result.disease_max_symptoms.split(',').map((symptom, i) => (
                         <span key={i}
-                          className="px-3 py-1.5 rounded-full bg-emerald/10 border border-emerald/20 text-emerald text-xs font-medium">
+                          className="px-3 py-1.5 rounded-full bg-[#10a37f]/10 dark:bg-emerald/10 border border-[#10a37f]/25 dark:border-emerald/20 text-[#10a37f] dark:text-emerald text-xs font-medium">
                           {symptom.trim()}
                         </span>
                       ))}
@@ -1345,55 +1345,55 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                     <div className="flex flex-wrap gap-2">
                       {result.extracted_symptoms.map((symptom, i) => (
                         <span key={i}
-                          className="px-3 py-1.5 rounded-full bg-emerald/10 border border-emerald/20 text-emerald text-xs font-medium">
+                          className="px-3 py-1.5 rounded-full bg-[#10a37f]/10 dark:bg-emerald/10 border border-[#10a37f]/25 dark:border-emerald/20 text-[#10a37f] dark:text-emerald text-xs font-medium">
                           {symptom}
                         </span>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-white/40">No specific symptoms extracted</p>
+                    <p className="text-sm text-gray-400 dark:text-white/40">No specific symptoms extracted</p>
                   )}
                 </div>
               )}
 
               {activeTab === 'recommendations' && (
                 <div>
-                  <p className="text-xs text-white/50 mb-3 font-mono uppercase">Recommendations</p>
+                  <p className="text-xs text-gray-500 dark:text-white/50 mb-3 font-mono uppercase">Recommendations</p>
                   {result.precautionary_measures ? (
-                    <div className="bg-emerald/10 border border-emerald/20 rounded-lg p-4 text-emerald text-sm leading-relaxed">
+                    <div className="bg-[#10a37f]/08 dark:bg-emerald/10 border border-[#10a37f]/20 dark:border-emerald/20 rounded-lg p-4 text-gray-700 dark:text-emerald text-sm leading-relaxed">
                       {result.precautionary_measures}
                     </div>
                   ) : result.recommendation && result.recommendation.length > 0 ? (
                     <ul className="space-y-3">
                       {result.recommendation.map((rec, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-white/80">
-                          <span className="w-5 h-5 rounded-full bg-emerald/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            {i === 0 ? <Stethoscope className="w-3 h-3 text-emerald" /> :
-                             i === 1 ? <Droplets className="w-3 h-3 text-emerald" /> :
-                             i === 2 ? <Heart className="w-3 h-3 text-emerald" /> :
-                             i === 3 ? <Phone className="w-3 h-3 text-emerald" /> :
-                             <Pill className="w-3 h-3 text-emerald" />}
+                        <li key={i} className="flex items-start gap-3 text-sm text-gray-700 dark:text-white/80">
+                          <span className="w-5 h-5 rounded-full bg-[#10a37f]/15 dark:bg-emerald/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            {i === 0 ? <Stethoscope className="w-3 h-3 text-[#10a37f] dark:text-emerald" /> :
+                             i === 1 ? <Droplets className="w-3 h-3 text-[#10a37f] dark:text-emerald" /> :
+                             i === 2 ? <Heart className="w-3 h-3 text-[#10a37f] dark:text-emerald" /> :
+                             i === 3 ? <Phone className="w-3 h-3 text-[#10a37f] dark:text-emerald" /> :
+                             <Pill className="w-3 h-3 text-[#10a37f] dark:text-emerald" />}
                           </span>
                           {rec}
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-sm text-white/40">No recommendations available</p>
+                    <p className="text-sm text-gray-400 dark:text-white/40">No recommendations available</p>
                   )}
                 </div>
               )}
             </div>
 
             {/* Feedback */}
-            <div className="p-6 border-t border-white/10">
+            <div className="p-6 border-t border-gray-100 dark:border-white/10">
               {!feedbackSubmitted ? (
                 <div>
-                  <p className="text-xs text-white/50 mb-3 font-mono uppercase">{UI_TEXT[uiLanguage].feedbackPrompt}</p>
+                  <p className="text-xs text-gray-500 dark:text-white/50 mb-3 font-mono uppercase">{UI_TEXT[uiLanguage].feedbackPrompt}</p>
                   <div className="flex gap-1 md:gap-2 mb-3">
                     {[1, 2, 3, 4, 5].map(star => (
                       <button key={star} onClick={() => setRating(star)}
-                        className={`transition-all duration-200 hover:scale-110 min-w-[44px] min-h-[44px] flex items-center justify-center ${star <= rating ? 'text-amber-400' : 'text-white/20'}`}>
+                        className={`transition-all duration-200 hover:scale-110 min-w-[44px] min-h-[44px] flex items-center justify-center ${star <= rating ? 'text-amber-400' : 'text-gray-300 dark:text-white/20'}`}>
                         <Star className="w-6 h-6 md:w-5 md:h-5" fill={star <= rating ? 'currentColor' : 'none'} />
                       </button>
                     ))}
@@ -1404,31 +1404,24 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                         value={feedbackText}
                         onChange={e => setFeedbackText(e.target.value)}
                         placeholder="Tell us more (optional)..."
-                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-mint/50 text-sm resize-none h-16"
+                        className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:outline-none focus:border-[#10a37f]/50 dark:focus:border-mint/50 text-sm resize-none h-16"
                       />
                       <button
                         onClick={handleFeedbackSubmit}
                         disabled={loading}
-                        className="w-full py-2 bg-emerald/80 text-white rounded-lg text-sm font-medium hover:bg-emerald transition-all duration-300 disabled:opacity-50">
+                        className="w-full py-2 bg-[#10a37f] dark:bg-emerald/80 text-white rounded-lg text-sm font-medium hover:bg-[#0d9571] dark:hover:bg-emerald transition-all duration-300 disabled:opacity-50 shadow-sm">
                         {loading ? UI_TEXT[uiLanguage].submitting : UI_TEXT[uiLanguage].submitFeedback}
                       </button>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-emerald animate-in fade-in duration-500">
+                <div className="flex items-center gap-2 text-[#10a37f] dark:text-emerald animate-in fade-in duration-500">
                   <ThumbsUp className="w-4 h-4" />
                   <span className="text-sm">{UI_TEXT[uiLanguage].thankYou}</span>
                 </div>
               )}
             </div>
-          </div>
-
-          {/* MANDATORY Disclaimer */}
-          <div className="border border-red-300 bg-red-50 dark:bg-red-900/10 rounded-lg p-3 mt-4">
-            <p className="text-red-600 dark:text-red-400 text-xs text-center font-medium">
-              {result.disclaimer}
-            </p>
           </div>
         </div>
       );
@@ -1438,31 +1431,37 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
   };
 
   // ── JSX ─────────────────────────────────────────────────────────
+  const isUrdu = uiLanguage === 'urdu';
+  const analyzeLabel = uiLanguage === 'english'
+    ? '🔍 Analyze Now'
+    : uiLanguage === 'urdu'
+    ? '🔍 تجزیہ کریں'
+    : '🔍 Analyze Karein';
+
   return (
     <section
       id="chat"
       ref={sectionRef}
-      className="relative w-full min-h-screen py-20 bg-gradient-to-b from-dark-void via-deep to-dark-void"
+      className="relative w-full min-h-screen py-20 bg-white dark:bg-[#0a140f] transition-colors duration-300"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      {/* Dark mode gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none hidden dark:block bg-gradient-to-b from-[#0a140f] via-[#0d1f17] to-[#0a140f]" />
+      {/* Light mode subtle gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none dark:hidden bg-gradient-to-b from-[#f0fdf9]/50 via-white to-[#f0fdf9]/50" />
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="text-center mb-12 chat-animate relative">
-            {/* Removed speaker voice and language dropdown completely */}
-          {/* Clean header, removed extra New Chat */}
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-mint" />
-            <span className="font-mono text-xs uppercase tracking-[0.1em] text-mint">
+            <Sparkles className="w-5 h-5 text-[#10a37f] dark:text-mint" />
+            <span className="font-mono text-xs uppercase tracking-[0.1em] text-[#10a37f] dark:text-mint">
               {UI_TEXT[uiLanguage].sectionBadge}
             </span>
           </div>
-          <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
-            {UI_TEXT[uiLanguage].heading1} <span className="text-mint">{UI_TEXT[uiLanguage].heading2}</span>
+          <h2 className={`font-display text-4xl md:text-5xl text-gray-900 dark:text-white mb-4 ${isUrdu ? 'font-urdu rtl-layout' : ''}`}>
+            {UI_TEXT[uiLanguage].heading1} <span className="text-[#10a37f] dark:text-mint">{UI_TEXT[uiLanguage].heading2}</span>
           </h2>
-          <p className="font-body text-white/60 max-w-lg mx-auto">
-            {UI_TEXT[uiLanguage].subheading}
-          </p>
           {/* Disclaimer Banner */}
-          <div className="mt-5 max-w-2xl mx-auto px-4 py-3 rounded-xl border border-amber-400/40 bg-amber-400/5 text-amber-300 text-xs text-center leading-relaxed">
+          <div className="mt-5 max-w-2xl mx-auto px-4 py-3 rounded-xl border border-amber-400/40 bg-amber-500/5 dark:bg-amber-400/5 text-amber-700 dark:text-amber-300 text-xs text-center leading-relaxed">
             {UI_TEXT[uiLanguage].disclaimer}
           </div>
         </div>
@@ -1470,9 +1469,9 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
 
         {/* API Status */}
         <div className="flex justify-center mb-6 chat-animate">
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full glass ${apiOnline ? 'border-emerald/30' : 'border-red-500/30'}`}>
-            <span className={`w-2 h-2 rounded-full ${apiOnline ? 'bg-emerald animate-pulse' : 'bg-red-500'}`} />
-            <span className="text-xs font-mono text-white/70">
+          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full glass shadow-sm ${apiOnline ? 'border-[#10a37f]/25 dark:border-emerald/30' : 'border-red-500/30'}`}>
+            <span className={`w-2 h-2 rounded-full ${apiOnline ? 'bg-[#10a37f] dark:bg-emerald animate-pulse' : 'bg-red-500'}`} />
+            <span className="text-xs font-mono text-gray-600 dark:text-white/70">
               {apiOnline ? UI_TEXT[uiLanguage].online : UI_TEXT[uiLanguage].offline}
             </span>
           </div>
@@ -1481,29 +1480,29 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
         {/* Chat Container */}
         <div className="grid lg:grid-cols-3 gap-6 chat-animate">
           {/* Main Chat Area */}
-          <div className="lg:col-span-2 flex flex-col h-[700px] glass-dark rounded-2xl overflow-hidden">
+          <div className="lg:col-span-2 flex flex-col h-[700px] rounded-2xl overflow-hidden bg-white dark:bg-transparent border border-gray-100 dark:border-transparent shadow-[0_4px_32px_rgba(0,0,0,0.06)] dark:shadow-none dark:glass-dark">
             {/* Header row with New Chat button */}
-            <div className="px-6 py-3 border-b border-white/10 bg-white/[0.02] flex items-center justify-between">
-              <span className="text-xs text-white/50 font-mono flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" />
+            <div className="px-6 py-3 border-b border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.02] flex items-center justify-between">
+              <span className="text-xs text-gray-500 dark:text-white/50 font-mono flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10a37f] dark:bg-emerald animate-pulse" />
                 Sehat AI Chat
               </span>
               <button
                 onClick={startNewChat}
-                className="bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 hover:text-emerald-100 border border-emerald-500/30 px-4 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all duration-200 min-h-[36px] shadow-sm font-semibold tracking-wide"
+                className="bg-[#10a37f]/08 hover:bg-[#10a37f]/15 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-[#10a37f] dark:text-emerald-300 dark:hover:text-emerald-100 border border-[#10a37f]/20 dark:border-emerald-500/30 px-4 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all duration-200 min-h-[36px] shadow-sm font-semibold tracking-wide hover:shadow-md"
               >
-                ✕ New Chat
+                New Chat
               </button>
             </div>
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/30 dark:bg-transparent">
               {messages.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-center">
-                  <div className="w-20 h-20 rounded-full bg-emerald/10 flex items-center justify-center mb-6">
-                    <Stethoscope className="w-10 h-10 text-emerald" />
+                  <div className="w-20 h-20 rounded-full bg-[#10a37f]/10 dark:bg-emerald/10 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,163,127,0.15)]">
+                    <Stethoscope className="w-10 h-10 text-[#10a37f] dark:text-emerald" />
                   </div>
-                  <h3 className="font-heading text-xl text-white mb-2">{UI_TEXT[uiLanguage].emptyTitle}</h3>
-                  <p className="text-white/50 text-sm max-w-sm mb-6">
+                  <h3 className={`font-heading text-xl text-gray-900 dark:text-white mb-2 ${isUrdu ? 'font-urdu' : ''}`}>{UI_TEXT[uiLanguage].emptyTitle}</h3>
+                  <p className={`text-gray-400 dark:text-white/50 text-sm max-w-sm mb-6 ${isUrdu ? 'font-urdu rtl-layout' : ''}`}>
                     {UI_TEXT[uiLanguage].emptySubtitle}
                   </p>
 
@@ -1514,10 +1513,10 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                         key={i}
                         onClick={() => handleInitialSymptom(sym)}
                         disabled={loading}
-                        className="p-2 md:p-3 rounded-xl bg-white/5 border border-white/10 hover:border-mint/40 hover:bg-mint/5 transition-all duration-300 text-center disabled:opacity-50 group min-h-[44px]"
+                        className="group p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-[#10a37f]/40 dark:hover:border-mint/40 hover:bg-[#10a37f]/05 dark:hover:bg-mint/5 hover:shadow-md dark:hover:shadow-none transition-all duration-300 text-center disabled:opacity-50 min-h-[60px] shadow-sm dark:shadow-none"
                       >
-                        <span className="text-2xl block mb-1">{sym.emoji}</span>
-                        <p className="text-sm text-white/90 font-medium leading-tight">
+                        <span className="text-2xl block mb-1 group-hover:scale-110 transition-transform duration-200">{sym.emoji}</span>
+                        <p className={`text-sm text-gray-700 dark:text-white/90 font-medium leading-tight ${uiLanguage === 'urdu' ? 'font-urdu' : ''}`}>
                           {uiLanguage === 'urdu' ? sym.labelUr : uiLanguage === 'roman' ? sym.labelRoman : sym.labelEn}
                         </p>
                       </button>
@@ -1526,8 +1525,8 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
 
                   {/* Multilingual badge */}
                   <div className="flex items-center gap-2 mt-6">
-                    <Languages className="w-4 h-4 text-mint" />
-                    <span className="text-xs text-mint/80 font-mono">{UI_TEXT[uiLanguage].symptomsBadge}</span>
+                    <Languages className="w-4 h-4 text-[#10a37f] dark:text-mint" />
+                    <span className="text-xs text-[#10a37f]/80 dark:text-mint/80 font-mono">{UI_TEXT[uiLanguage].symptomsBadge}</span>
                   </div>
                 </div>
               )}
@@ -1538,25 +1537,25 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                   className={`flex gap-3 ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.type === 'ai' && (
-                    <div className="w-8 h-8 rounded-full bg-emerald/20 flex items-center justify-center flex-shrink-0 mt-1">
-                      <Bot className="w-4 h-4 text-emerald" />
+                    <div className="w-8 h-8 rounded-full bg-[#10a37f]/15 dark:bg-emerald/20 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                      <Bot className="w-4 h-4 text-[#10a37f] dark:text-emerald" />
                     </div>
                   )}
                   <div
                     className={`max-w-[85%] md:max-w-[70%] px-3 md:px-4 py-2 md:py-3 rounded-2xl ${
                       msg.type === 'user'
-                        ? 'bg-emerald/20 text-white ml-auto rounded-br-sm'
-                        : 'bg-white/5 text-white/90 border border-white/10 rounded-bl-sm'
+                        ? 'bg-[#10a37f] dark:bg-emerald/20 text-white ml-auto rounded-br-sm shadow-[0_2px_12px_rgba(16,163,127,0.3)]'
+                        : 'bg-white dark:bg-white/5 text-gray-800 dark:text-white/90 border border-gray-100 dark:border-white/10 rounded-bl-sm shadow-sm dark:shadow-none'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.content }} />
-                    <span className="text-[10px] text-white/30 mt-2 block">
+                    <p className={`text-sm whitespace-pre-wrap ${isUrdu && msg.type === 'ai' ? 'font-urdu rtl-layout' : ''}`} dangerouslySetInnerHTML={{ __html: msg.content }} />
+                    <span className={`text-[10px] mt-2 block ${msg.type === 'user' ? 'text-white/60' : 'text-gray-400 dark:text-white/30'}`}>
                       {msg.timestamp.toLocaleTimeString()}
                     </span>
                   </div>
                   {msg.type === 'user' && (
-                    <div className="w-8 h-8 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
-                      <User className="w-4 h-4 text-mint" />
+                    <div className="w-8 h-8 rounded-full bg-[#10a37f]/15 dark:bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                      <User className="w-4 h-4 text-[#10a37f] dark:text-mint" />
                     </div>
                   )}
                 </div>
@@ -1564,20 +1563,20 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
 
               {loading && (
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-emerald/20 flex items-center justify-center flex-shrink-0">
-                    <Bot className="w-4 h-4 text-emerald" />
+                  <div className="w-8 h-8 rounded-full bg-[#10a37f]/15 dark:bg-emerald/20 flex items-center justify-center flex-shrink-0">
+                    <Bot className="w-4 h-4 text-[#10a37f] dark:text-emerald" />
                   </div>
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                  <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 shadow-sm dark:shadow-none">
                     <div className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 text-mint animate-spin" />
-                      <span className="text-sm text-white/60">
+                      <Loader2 className="w-4 h-4 text-[#10a37f] dark:text-mint animate-spin" />
+                      <span className={`text-sm text-gray-500 dark:text-white/60 ${isUrdu ? 'font-urdu' : ''}`}>
                         {inFollowupFlow ? UI_TEXT[uiLanguage].followupText : UI_TEXT[uiLanguage].analyzingText}
                       </span>
                     </div>
                     <div className="mt-3 space-y-2">
-                      <div className="h-2 bg-white/10 rounded-full w-64 animate-pulse" />
-                      <div className="h-2 bg-white/10 rounded-full w-48 animate-pulse" />
-                      <div className="h-2 bg-white/10 rounded-full w-56 animate-pulse" />
+                      <div className="h-2 bg-gray-100 dark:bg-white/10 rounded-full w-64 animate-pulse" />
+                      <div className="h-2 bg-gray-100 dark:bg-white/10 rounded-full w-48 animate-pulse" />
+                      <div className="h-2 bg-gray-100 dark:bg-white/10 rounded-full w-56 animate-pulse" />
                     </div>
                   </div>
                 </div>
@@ -1587,9 +1586,9 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
             </div>
 
             {/* Input Area */}
-            <div className="p-4 border-t border-white/10">
+            <div className="p-4 border-t border-gray-100 dark:border-white/10 bg-white dark:bg-transparent">
               {inputError && (
-                <div className="mb-3 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
+                <div className="mb-3 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-300 text-xs flex items-center gap-2">
                   <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
                   {inputError}
                 </div>
@@ -1598,23 +1597,24 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
               {/* Accumulated symptoms indicator */}
               {accumulatedSymptoms.length > 0 && (
                 <div className="mb-2 flex flex-wrap gap-1 items-center">
-                  <span className="text-xs text-white/30">{UI_TEXT[uiLanguage].collectedLabel}</span>
+                  <span className="text-xs text-gray-400 dark:text-white/30">{UI_TEXT[uiLanguage].collectedLabel}</span>
                   {accumulatedSymptoms.slice(0, 4).map(s => (
-                    <span key={s} className="text-xs bg-emerald/10 text-emerald px-2 py-0.5 rounded-full border border-emerald/20">
+                    <span key={s} className="text-xs bg-[#10a37f]/10 dark:bg-emerald/10 text-[#10a37f] dark:text-emerald px-2 py-0.5 rounded-full border border-[#10a37f]/20 dark:border-emerald/20">
                       {s.replace(/_/g, ' ')}
                     </span>
                   ))}
                   {accumulatedSymptoms.length > 4 && (
-                    <span className="text-xs text-white/30">+{accumulatedSymptoms.length - 4} more</span>
+                    <span className="text-xs text-gray-400 dark:text-white/30">+{accumulatedSymptoms.length - 4} more</span>
                   )}
                 </div>
               )}
-              {/* Language Tabs inside chat input area */}
-              <div className="flex gap-1 mb-2">
+
+              {/* Language Tabs */}
+              <div className="flex gap-1.5 mb-3">
                 {[
                   { key: 'roman_urdu' as const, label: 'Roman Urdu', uiKey: 'roman' as const },
-                  { key: 'english' as const, label: 'English', uiKey: 'english' as const },
-                  { key: 'urdu' as const, label: 'اردو', uiKey: 'urdu' as const },
+                  { key: 'english' as const, label: 'English',    uiKey: 'english' as const },
+                  { key: 'urdu' as const,    label: 'اردو',       uiKey: 'urdu' as const },
                 ].map(lang => (
                   <button
                     key={lang.key}
@@ -1622,10 +1622,10 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                       setInputLang(lang.key);
                       setUiLanguage(lang.uiKey);
                     }}
-                    className={`px-3 py-1 rounded-full text-xs transition min-h-[32px] ${
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 min-h-[32px] ${
                       inputLang === lang.key
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white'
+                        ? 'bg-[#10a37f] dark:bg-emerald-600 text-white shadow-md shadow-[#10a37f]/25 dark:shadow-emerald-900/40 scale-[1.02]'
+                        : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-white/20 hover:text-gray-700 dark:hover:text-white'
                     }`}
                   >
                     {lang.label}
@@ -1633,60 +1633,93 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                 ))}
               </div>
 
-              {/* Analyze Button — permanently visible once any symptom collected */}
-              {/* Only hides after a FINAL success prediction, not during followup */}
+              {/* ── AESTHETIC ANALYZE BUTTON ── */}
               {readyToAnalyze && selectedPrediction?.status !== 'success' && (
                 <div className="flex justify-center my-3">
                   <button
                     onClick={handleAnalyze}
                     disabled={loading}
-                    className="w-full md:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-8 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/40 transition-all duration-200 disabled:opacity-50 min-h-[46px] active:scale-[0.98] border border-emerald-500/20"
+                    className={`
+                      w-full md:w-auto
+                      relative overflow-hidden
+                      bg-gradient-to-r from-[#10a37f] via-[#0d9571] to-[#059669]
+                      dark:from-emerald-600 dark:via-emerald-500 dark:to-teal-500
+                      hover:from-[#0d9571] hover:to-[#047857]
+                      dark:hover:from-emerald-500 dark:hover:to-teal-400
+                      text-white
+                      px-8 py-3.5 rounded-xl
+                      font-bold text-sm
+                      flex items-center justify-center gap-2.5
+                      btn-analyze-glow
+                      transition-all duration-300
+                      disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none
+                      min-h-[48px]
+                      active:scale-[0.97]
+                      border border-white/20
+                    `}
                   >
-                    🔍 Analyze Karein
+                    <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 animate-[shimmer_2s_linear_infinite] bg-[length:200%_100%]" />
+                    <span className="relative flex items-center gap-2.5">
+                      {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                      <span className={`relative ${isUrdu ? 'font-urdu text-base' : 'text-sm'}`}>
+                        {loading ? UI_TEXT[uiLanguage].analyzingText : analyzeLabel}
+                      </span>
+                    </span>
                   </button>
                 </div>
               )}
 
               <div className="flex flex-col gap-2">
-                <div className="flex gap-3">
-                  {/* ── WhatsApp-style voice recorder ───────────────────── */}
+                <div className="flex gap-2.5">
+                  {/* ── Voice recorder ─────────────────────────────── */}
                   <VoiceRecorder
                     apiBase={API_BASE}
                     uiLanguage={uiLanguage}
                     disabled={loading}
                     onTranscribed={(text) => {
-                      // CHANGE 4: Fill input only — do NOT auto-send
                       setInputValue(text);
                     }}
                   />
                   <div className="flex-1 relative">
-                  <input
-                    id="chat-input"
-                    name="chat-input"
-                    type="text"
-                    value={inputValue}
-                    onChange={e => {
-                      setInputValue(e.target.value);
-                      if (inputError) setInputError('');
-                    }}
-                    onKeyDown={handleKeyDown}
-                    placeholder={inFollowupFlow
-                      ? UI_TEXT[uiLanguage].placeholderFollowup
-                      : UI_TEXT[uiLanguage].placeholder}
-                    className={`w-full px-5 py-4 rounded-xl bg-white/5 border text-white placeholder-white/30 focus:outline-none focus:border-mint/50 focus:ring-1 focus:ring-mint/30 transition-all duration-300 text-sm ${
-                      inputError ? 'border-red-500/50' : 'border-white/10'
-                    }`}
-                  />
+                    <input
+                      id="chat-input"
+                      name="chat-input"
+                      type="text"
+                      value={inputValue}
+                      onChange={e => {
+                        setInputValue(e.target.value);
+                        if (inputError) setInputError('');
+                      }}
+                      onKeyDown={handleKeyDown}
+                      dir={isUrdu ? 'rtl' : 'ltr'}
+                      placeholder={inFollowupFlow
+                        ? UI_TEXT[uiLanguage].placeholderFollowup
+                        : UI_TEXT[uiLanguage].placeholder}
+                      className={`w-full px-5 py-4 rounded-xl
+                        bg-gray-50 dark:bg-white/5
+                        border text-gray-800 dark:text-white
+                        placeholder-gray-400 dark:placeholder-white/30
+                        focus:outline-none focus:ring-2
+                        focus:border-[#10a37f]/50 dark:focus:border-mint/50
+                        focus:ring-[#10a37f]/15 dark:focus:ring-mint/15
+                        transition-all duration-300 text-sm
+                        ${isUrdu ? 'font-urdu text-right' : ''}
+                        ${
+                          inputError
+                            ? 'border-red-400/60 dark:border-red-500/50'
+                            : 'border-gray-200 dark:border-white/10'
+                        }`}
+                    />
+                  </div>
+                  <button
+                    id="send-btn"
+                    onClick={handleSend}
+                    disabled={!inputValue.trim() || loading}
+                    className="px-4 py-3 md:px-5 md:py-4 bg-[#10a37f] dark:bg-emerald text-white rounded-xl font-medium transition-all duration-300 hover:bg-[#0d9571] dark:hover:bg-emerald/80 hover:scale-105 hover:shadow-[0_4px_16px_rgba(16,163,127,0.4)] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2 min-w-[44px] min-h-[44px] shadow-[0_2px_8px_rgba(16,163,127,0.3)]"
+                  >
+                    <Send className="w-5 h-5 md:w-4 md:h-4" />
+                  </button>
                 </div>
-                <button
-                  id="send-btn"
-                  onClick={handleSend}
-                  disabled={!inputValue.trim() || loading}
-                  className="px-4 py-3 md:px-6 md:py-4 bg-emerald text-white rounded-xl font-medium transition-all duration-300 hover:bg-emerald/80 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[44px] min-h-[44px]"
-                >
-                  <Send className="w-5 h-5 md:w-4 md:h-4" />
-                </button>
-              </div>
               </div>
             </div>
           </div>

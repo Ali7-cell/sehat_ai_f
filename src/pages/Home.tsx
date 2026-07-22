@@ -17,6 +17,17 @@ export default function Home() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
 
+  // ── On mount: always scroll to hero (top) ──
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Small delay to ensure DOM is ready before scrolling
+    const t = setTimeout(() => {
+      const heroEl = document.getElementById('hero');
+      if (heroEl) heroEl.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }, 50);
+    return () => clearTimeout(t);
+  }, []);
+
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true);
     const data = await getHistory(sessionId, 20);
@@ -46,7 +57,9 @@ export default function Home() {
         toggleTheme={toggleTheme}
         onNavigate={handleNavigate}
       />
-      <main className="min-h-screen">
+      <main className={`min-h-screen transition-colors duration-300 ${
+        theme === 'dark' ? 'bg-[#0a140f]' : 'bg-white'
+      }`}>
         <Hero onStartChat={handleStartChat} />
         <ChatInterface
           historyItems={history}

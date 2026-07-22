@@ -4,34 +4,34 @@
 
 @layer base {
   :root {
-    --background: 60 14% 97%;
-    --foreground: 150 28% 17%;
+    --background: 0 0% 100%;
+    --foreground: 220 15% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 150 28% 17%;
+    --card-foreground: 220 15% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 150 28% 17%;
-    --primary: 151 40% 30%;
+    --popover-foreground: 220 15% 12%;
+    --primary: 163 84% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 151 32% 80%;
-    --secondary-foreground: 150 28% 17%;
-    --muted: 140 20% 92%;
-    --muted-foreground: 150 10% 40%;
-    --accent: 151 40% 65%;
-    --accent-foreground: 150 28% 17%;
+    --secondary: 160 30% 94%;
+    --secondary-foreground: 220 15% 12%;
+    --muted: 160 20% 96%;
+    --muted-foreground: 220 10% 42%;
+    --accent: 163 84% 36%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 140 15% 88%;
-    --input: 140 15% 88%;
-    --ring: 151 40% 30%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 163 84% 36%;
     --radius: 0.625rem;
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 150 28% 17%;
-    --sidebar-primary: 151 40% 30%;
+    --sidebar-foreground: 220 15% 12%;
+    --sidebar-primary: 163 84% 36%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 140 20% 92%;
-    --sidebar-accent-foreground: 150 28% 17%;
-    --sidebar-border: 140 15% 88%;
-    --sidebar-ring: 151 40% 30%;
+    --sidebar-accent: 160 20% 96%;
+    --sidebar-accent-foreground: 220 15% 12%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 163 84% 36%;
   }
 
   .dark {
@@ -81,51 +81,62 @@
 }
 
 @layer utilities {
-  .font-display {
-    font-family: 'Playfair Display', serif;
-  }
-  .font-heading {
-    font-family: 'Space Grotesk', sans-serif;
-  }
-  .font-body {
-    font-family: 'Inter', sans-serif;
-  }
-  .font-mono {
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .font-urdu {
-    font-family: 'Noto Nastaliq Urdu', serif;
-  }
+  .font-display { font-family: 'Playfair Display', serif; }
+  .font-heading { font-family: 'Space Grotesk', sans-serif; }
+  .font-body    { font-family: 'Inter', sans-serif; }
+  .font-mono    { font-family: 'JetBrains Mono', monospace; }
+  .font-urdu    { font-family: 'Noto Nastaliq Urdu', serif; }
+
   .text-glow {
     animation: textGlow 3s ease-in-out infinite;
   }
+
+  /* ─── GLASS: always dark-style (used in Hero which always has dark bg) ─── */
   .glass {
-    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.06) 100%);
+    border: 1px solid rgba(255,255,255,0.14);
     backdrop-filter: blur(12px);
   }
   .glass-dark {
-    background: linear-gradient(135deg, rgba(26,58,46,0.4) 0%, rgba(15,31,24,0.6) 100%);
-    border: 1px solid rgba(116,198,157,0.1);
+    background: linear-gradient(135deg, rgba(26,58,46,0.5) 0%, rgba(15,31,24,0.65) 100%);
+    border: 1px solid rgba(116,198,157,0.12);
     backdrop-filter: blur(12px);
   }
+
+  /* ─── LIGHT-CARD: white panels used in chat/history/result in light mode ─── */
+  .light-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  /* ─── RTL ─── */
+  .rtl-layout { direction: rtl; text-align: right; }
+  .ltr-layout { direction: ltr; text-align: left; }
 }
 
+/* ── Keyframes ─────────────────────────────────────── */
 @keyframes textGlow {
-  0%, 100% {
-    text-shadow: 0 0 20px rgba(116,198,157,0.3);
-  }
-  50% {
-    text-shadow: 0 0 40px rgba(116,198,157,0.6);
-  }
+  0%, 100% { text-shadow: 0 0 20px rgba(116,198,157,0.3); }
+  50%       { text-shadow: 0 0 40px rgba(116,198,157,0.6); }
 }
-
 @keyframes breathe {
   0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.8; }
+  50%       { opacity: 0.8; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(16,163,127,0.3); }
+  50%       { box-shadow: 0 0 30px rgba(16,163,127,0.6); }
+}
+@keyframes analyzeGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(16,163,127,0.4),  0 4px 16px rgba(16,163,127,0.3); }
+  50%       { box-shadow: 0 0 38px rgba(16,163,127,0.7),  0 6px 28px rgba(16,163,127,0.5); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(45,106,79,0.3); }
-  50% { box-shadow: 0 0 30px rgba(45,106,79,0.6); }
-}
+.btn-analyze-glow {
+  animation: analyzeGlow 2.5s ease-in-out infinite;
+}

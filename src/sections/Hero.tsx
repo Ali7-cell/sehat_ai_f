@@ -45,7 +45,7 @@ export default function Hero({ onStartChat }: HeroProps) {
   }, []);
 
   return (
-    <section id="hero" className="relative w-full h-screen overflow-hidden bg-dark-void">
+    <section id="hero" className="relative w-full h-screen overflow-hidden bg-dark-void dark:bg-dark-void">
       <MetaballCore />
 
       {/* ── Content overlay ── */}
@@ -82,7 +82,7 @@ export default function Hero({ onStartChat }: HeroProps) {
               <button
                 ref={ctaRef}
                 onClick={onStartChat}
-                className="group flex items-center gap-3 px-8 py-4 bg-emerald text-white rounded-full font-heading font-medium text-base transition-all duration-300 hover:scale-105 hover:shadow-glow-lg opacity-0"
+                className="group flex items-center gap-3 px-8 py-4 bg-[#10a37f] hover:bg-[#0d9571] text-white rounded-full font-heading font-semibold text-base transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(16,163,127,0.5)] opacity-0 shadow-[0_4px_20px_rgba(16,163,127,0.35)]"
               >
                 <MessageSquareIcon className="w-5 h-5" />
                 Start Consultation
@@ -104,7 +104,7 @@ export default function Hero({ onStartChat }: HeroProps) {
         </div>
       </div>
 
-      {/* ── RIGHT SIDE: Vertical page-dot nav (click to jump) ── */}
+      {/* ── RIGHT SIDE: Vertical page-dot nav ── */}
       <nav
         aria-label="Page navigation"
         className="absolute right-5 md:right-8 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-4"
@@ -115,19 +115,16 @@ export default function Hero({ onStartChat }: HeroProps) {
             onClick={() => navigateTo(page.id)}
             title={page.label}
             aria-label={`Go to ${page.label}`}
-            className={`group relative flex items-center justify-end gap-2 transition-all duration-300`}
+            className="group relative flex items-center justify-end gap-2 transition-all duration-300"
           >
-            {/* Tooltip label — visible on hover */}
             <span className="absolute right-6 whitespace-nowrap text-xs font-mono text-mint/80 bg-dark-void/80 px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-mint/20">
               {page.label}
             </span>
-
-            {/* Dot */}
             <span
               className={`
                 block rounded-full border transition-all duration-300
                 ${idx === 0
-                  ? 'w-3 h-3 bg-mint border-mint shadow-[0_0_8px_rgba(116,198,157,0.8)]'           /* active = hero */
+                  ? 'w-3 h-3 bg-mint border-mint shadow-[0_0_8px_rgba(116,198,157,0.8)]'
                   : 'w-2 h-2 bg-transparent border-mint/40 group-hover:border-mint group-hover:bg-mint/40'
                 }
               `}
@@ -136,13 +133,12 @@ export default function Hero({ onStartChat }: HeroProps) {
         ))}
       </nav>
 
-      {/* ── BOTTOM: Animated "go to next section" click arrow ── */}
+      {/* ── BOTTOM: Scroll down arrow ── */}
       <button
         onClick={() => navigateTo('chat')}
         aria-label="Go to Chat section"
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 group"
       >
-        {/* Pulsing ring */}
         <span className="relative flex h-10 w-10 items-center justify-center rounded-full border border-mint/30 bg-white/5 backdrop-blur-sm group-hover:border-mint/70 group-hover:bg-mint/10 transition-all duration-300">
           <span className="absolute inset-0 rounded-full border border-mint/20 animate-ping opacity-50" />
           <svg
