@@ -1008,24 +1008,36 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
     if (result.flow_step === 'followup' && result.followup_options) {
       return (
         <div className="space-y-4">
-          <div className="border border-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5">
+          <div className="border border-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🩺</span>
-              <h3 className="font-semibold text-blue-800 dark:text-blue-300 text-base">
-                {result.followup_question_ur || result.followup_question}
+              <h3 className="font-semibold text-emerald-800 dark:text-emerald-300 text-base">
+                {uiLanguage === 'english'
+                  ? (result.followup_question || result.followup_question_ur)
+                  : (result.followup_question_ur || result.followup_question)}
               </h3>
             </div>
-            <p className="text-blue-600 dark:text-blue-400 text-xs mb-4 italic">
-              {result.followup_question}
-            </p>
+            {uiLanguage === 'english' ? (
+              result.followup_question_ur && (
+                <p className="text-emerald-600 dark:text-emerald-400 text-xs mb-4 italic">
+                  {result.followup_question_ur}
+                </p>
+              )
+            ) : (
+              result.followup_question && (
+                <p className="text-emerald-600 dark:text-emerald-400 text-xs mb-4 italic">
+                  {result.followup_question}
+                </p>
+              )
+            )}
 
             {/* Detected so far */}
             {result.extracted_symptoms && result.extracted_symptoms.length > 0 && (
               <div className="mb-4">
-                <p className="text-xs font-medium text-blue-600 mb-2">{UI_TEXT[uiLanguage].detectedSoFar}</p>
+                <p className="text-xs font-medium text-emerald-600 mb-2">{UI_TEXT[uiLanguage].detectedSoFar}</p>
                 <div className="flex flex-wrap gap-2">
                   {result.extracted_symptoms.map(s => (
-                    <span key={s} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                    <span key={s} className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">
                       {s.replace(/_/g, ' ')}
                     </span>
                   ))}
@@ -1034,17 +1046,17 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
             )}
 
             {/* Followup option buttons */}
-            <p className="text-xs font-medium text-blue-600 mb-3">{UI_TEXT[uiLanguage].followupPrompt}</p>
+            <p className="text-xs font-medium text-emerald-600 mb-3">{UI_TEXT[uiLanguage].followupPrompt}</p>
             <div className="grid grid-cols-1 gap-2">
               {result.followup_options.map((opt, i) => (
                 <button
                   key={i}
                   onClick={() => handleFollowupOption(opt)}
                   disabled={loading}
-                  className="w-full text-left px-4 py-3 rounded-xl bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/40 dark:hover:bg-blue-700/60 text-blue-900 dark:text-blue-100 transition-all duration-200 border border-blue-200 dark:border-blue-600 disabled:opacity-50"
+                  className="w-full text-left px-4 py-3 rounded-xl bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-800/40 dark:hover:bg-emerald-700/60 text-emerald-900 dark:text-emerald-100 transition-all duration-200 border border-emerald-200 dark:border-emerald-600 disabled:opacity-50"
                 >
                   <span className="font-medium text-sm block">{opt.label_ur}</span>
-                  <span className="text-xs text-blue-600 dark:text-blue-300">{opt.label_en}</span>
+                  <span className="text-xs text-emerald-600 dark:text-emerald-300">{opt.label_en}</span>
                 </button>
               ))}
             </div>
