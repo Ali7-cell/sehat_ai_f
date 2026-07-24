@@ -44,131 +44,494 @@ const INITIAL_SYMPTOMS = [
 ];
 
 const DISEASE_SYMPTOMS: Record<string, string[]> = {
-  "Fungal infection": ["Itching", "Skin Rash", "Nodal Skin Eruptions", "Dischromic Patches"],
-  "Allergy": ["Continuous Sneezing", "Shivering", "Chills", "Watering From Eyes"],
-  "GERD": ["Stomach Pain", "Acidity", "Ulcers On Tongue", "Vomiting", "Cough", "Chest Pain"],
-  "Chronic cholestasis": ["Itching", "Vomiting", "Yellowish Skin", "Nausea", "Loss Of Appetite", "Abdominal Pain", "Yellowing Of Eyes"],
-  "Drug Reaction": ["Itching", "Skin Rash", "Stomach Pain", "Burning Micturition", "Spotting Urination"],
-  "Peptic ulcer disease": ["Vomiting", "Indigestion", "Loss Of Appetite", "Abdominal Pain", "Passage Of Gases", "Internal Itching"],
-  "AIDS": ["Muscle Wasting", "Patches In Throat", "High Fever", "Extra Marital Contacts"],
-  "Diabetes": ["Fatigue", "Weight Loss", "Restlessness", "Lethargy", "Irregular Sugar Level", "Blurred And Distorted Vision", "Obesity", "Excessive Hunger", "Increased Appetite", "Polyuria"],
-  "Gastroenteritis": ["Vomiting", "Sunken Eyes", "Dehydration", "Diarrhoea"],
-  "Bronchial Asthma": ["Fatigue", "Cough", "High Fever", "Breathlessness", "Family History", "Mucoid Sputum"],
-  "Hypertension": ["Headache", "Chest Pain", "Dizziness", "Loss Of Balance", "Lack Of Concentration"],
-  "Migraine": ["Acidity", "Indigestion", "Headache", "Blurred And Distorted Vision", "Excessive Hunger", "Stiff Neck", "Depression", "Irritability", "Visual Disturbances"],
-  "Cervical spondylosis": ["Back Pain", "Weakness In Limbs", "Neck Pain", "Dizziness", "Loss Of Balance"],
-  "Paralysis (brain hemorrhage)": ["Vomiting", "Headache", "Weakness Of One Body Side", "Altered Sensorium"],
-  "Jaundice": ["Itching", "Vomiting", "Fatigue", "Weight Loss", "High Fever", "Yellowish Skin", "Dark Urine", "Abdominal Pain"],
-  "Malaria": ["Chills", "Vomiting", "High Fever", "Sweating", "Headache", "Nausea", "Diarrhoea", "Muscle Pain"],
-  "Chicken pox": ["Itching", "Skin Rash", "Fatigue", "Lethargy", "High Fever", "Headache", "Loss Of Appetite", "Mild Fever", "Swelled Lymph Nodes", "Malaise", "Red Spots Over Body"],
-  "Dengue": ["Skin Rash", "Chills", "Joint Pain", "Vomiting", "Fatigue", "High Fever", "Headache", "Nausea", "Loss Of Appetite", "Pain Behind The Eyes", "Back Pain", "Malaise", "Muscle Pain", "Red Spots Over Body"],
-  "Typhoid": ["Chills", "Vomiting", "Fatigue", "High Fever", "Headache", "Nausea", "Constipation", "Abdominal Pain", "Diarrhoea", "Toxic Look Typhos", "Belly Pain"],
-  "hepatitis A": ["Joint Pain", "Vomiting", "Yellowish Skin", "Dark Urine", "Nausea", "Loss Of Appetite", "Abdominal Pain", "Diarrhoea", "Mild Fever", "Yellowing Of Eyes", "Muscle Pain"],
-  "Hepatitis B": ["Itching", "Fatigue", "Lethargy", "Yellowish Skin", "Dark Urine", "Loss Of Appetite", "Abdominal Pain", "Yellow Urine", "Yellowing Of Eyes", "Malaise", "Receiving Blood Transfusion", "Receiving Unsterile Injections"],
-  "Hepatitis C": ["Fatigue", "Yellowish Skin", "Nausea", "Loss Of Appetite", "Yellowing Of Eyes", "Family History"],
-  "Hepatitis D": ["Joint Pain", "Vomiting", "Fatigue", "Yellowish Skin", "Dark Urine", "Nausea", "Loss Of Appetite", "Abdominal Pain", "Yellowing Of Eyes"],
-  "Hepatitis E": ["Joint Pain", "Vomiting", "Fatigue", "High Fever", "Yellowish Skin", "Dark Urine", "Nausea", "Loss Of Appetite", "Abdominal Pain", "Yellowing Of Eyes", "Acute Liver Failure", "Coma", "Stomach Bleeding"],
-  "Alcoholic hepatitis": ["Vomiting", "Yellowish Skin", "Abdominal Pain", "Swelling Of Stomach", "Distention Of Abdomen", "History Of Alcohol Consumption", "Fluid Overload"],
-  "Tuberculosis": ["Chills", "Vomiting", "Fatigue", "Weight Loss", "Cough", "High Fever", "Breathlessness", "Sweating", "Loss Of Appetite", "Mild Fever", "Yellowing Of Eyes", "Swelled Lymph Nodes", "Malaise", "Phlegm", "Chest Pain", "Blood In Sputum"],
-  "Common Cold": ["Continuous Sneezing", "Chills", "Fatigue", "Cough", "High Fever", "Headache", "Swelled Lymph Nodes", "Malaise", "Phlegm", "Throat Irritation", "Redness Of Eyes", "Sinus Pressure", "Runny Nose", "Congestion", "Chest Pain", "Loss Of Smell", "Muscle Pain"],
-  "Pneumonia": ["Chills", "Fatigue", "Cough", "High Fever", "Breathlessness", "Sweating", "Malaise", "Phlegm", "Chest Pain", "Fast Heart Rate", "Rusty Sputum"],
-  "Dimorphic hemmorhoids(piles)": ["Constipation", "Pain During Bowel Movements", "Pain In Anal Region", "Bloody Stool", "Irritation In Anus"],
-  "Heart attack": ["Vomiting", "Breathlessness", "Sweating", "Chest Pain"],
-  "Varicose veins": ["Fatigue", "Cramps", "Bruising", "Obesity", "Swollen Legs", "Swollen Blood Vessels", "Prominent Veins On Calf"],
-  "Hypothyroidism": ["Fatigue", "Weight Gain", "Cold Hands And Feets", "Mood Swings", "Lethargy", "Dizziness", "Puffy Face And Eyes", "Enlarged Thyroid", "Brittle Nails", "Swollen Extremeties", "Depression", "Irritability", "Abnormal Menstruation"],
-  "Hyperthyroidism": ["Fatigue", "Mood Swings", "Weight Loss", "Restlessness", "Sweating", "Diarrhoea", "Fast Heart Rate", "Excessive Hunger", "Muscle Weakness", "Irritability", "Abnormal Menstruation"],
-  "Hypoglycemia": ["Vomiting", "Fatigue", "Anxiety", "Sweating", "Headache", "Nausea", "Blurred And Distorted Vision", "Excessive Hunger", "Drying And Tingling Lips", "Slurred Speech", "Irritability", "Palpitations"],
-  "Osteoarthristis": ["Joint Pain", "Neck Pain", "Knee Pain", "Hip Joint Pain", "Swelling Joints", "Painful Walking"],
-  "Arthritis": ["Muscle Weakness", "Stiff Neck", "Swelling Joints", "Movement Stiffness", "Painful Walking"],
-  "(vertigo) Paroymsal  Positional Vertigo": ["Vomiting", "Headache", "Nausea", "Spinning Movements", "Loss Of Balance", "Unsteadiness"],
-  "Acne": ["Skin Rash", "Pus Filled Pimples", "Blackheads", "Scurring"],
-  "Urinary tract infection": ["Burning Micturition", "Bladder Discomfort", "Foul Smell Of Urine", "Continuous Feel Of Urine"],
-  "Psoriasis": ["Skin Rash", "Joint Pain", "Skin Peeling", "Silver Like Dusting", "Small Dents In Nails", "Inflammatory Nails"],
-  "Impetigo": ["Skin Rash", "High Fever", "Blister", "Red Sore Around Nose", "Yellow Crust Ooze"]
+  "Fungal infection": [
+    "Itching",
+    "Skin Rash",
+    "Nodal Skin Eruptions",
+    "Dischromic Patches"
+  ],
+  "Allergy": [
+    "Continuous Sneezing",
+    "Shivering",
+    "Chills",
+    "Watering From Eyes"
+  ],
+  "GERD": [
+    "Stomach Pain",
+    "Acidity",
+    "Ulcers On Tongue",
+    "Vomiting",
+    "Cough",
+    "Chest Pain"
+  ],
+  "Chronic cholestasis": [
+    "Itching",
+    "Vomiting",
+    "Yellowish Skin",
+    "Nausea",
+    "Loss Of Appetite",
+    "Abdominal Pain",
+    "Yellowing Of Eyes"
+  ],
+  "Drug Reaction": [
+    "Itching",
+    "Skin Rash",
+    "Stomach Pain",
+    "Burning Micturition",
+    "Spotting Urination"
+  ],
+  "Peptic ulcer disease": [
+    "Vomiting",
+    "Indigestion",
+    "Loss Of Appetite",
+    "Abdominal Pain",
+    "Passage Of Gases",
+    "Internal Itching"
+  ],
+  "AIDS": [
+    "Muscle Wasting",
+    "Patches In Throat",
+    "High Fever",
+    "Extra Marital Contacts"
+  ],
+  "Diabetes": [
+    "Fatigue",
+    "Weight Loss",
+    "Restlessness",
+    "Lethargy",
+    "Irregular Sugar Level",
+    "Blurred And Distorted Vision",
+    "Obesity",
+    "Excessive Hunger",
+    "Increased Appetite",
+    "Polyuria"
+  ],
+  "Gastroenteritis": [
+    "Vomiting",
+    "Sunken Eyes",
+    "Dehydration",
+    "Diarrhoea"
+  ],
+  "Bronchial Asthma": [
+    "Fatigue",
+    "Cough",
+    "High Fever",
+    "Breathlessness",
+    "Family History",
+    "Mucoid Sputum"
+  ],
+  "Hypertension": [
+    "Headache",
+    "Chest Pain",
+    "Dizziness",
+    "Loss Of Balance",
+    "Lack Of Concentration"
+  ],
+  "Migraine": [
+    "Acidity",
+    "Indigestion",
+    "Headache",
+    "Blurred And Distorted Vision",
+    "Excessive Hunger",
+    "Stiff Neck",
+    "Depression",
+    "Irritability",
+    "Visual Disturbances"
+  ],
+  "Cervical spondylosis": [
+    "Back Pain",
+    "Weakness In Limbs",
+    "Neck Pain",
+    "Dizziness",
+    "Loss Of Balance"
+  ],
+  "Paralysis (brain hemorrhage)": [
+    "Vomiting",
+    "Headache",
+    "Weakness Of One Body Side",
+    "Altered Sensorium"
+  ],
+  "Jaundice": [
+    "Itching",
+    "Vomiting",
+    "Fatigue",
+    "Weight Loss",
+    "High Fever",
+    "Yellowish Skin",
+    "Dark Urine",
+    "Abdominal Pain"
+  ],
+  "Malaria": [
+    "Chills",
+    "Vomiting",
+    "High Fever",
+    "Sweating",
+    "Headache",
+    "Nausea",
+    "Diarrhoea",
+    "Muscle Pain"
+  ],
+  "Chicken pox": [
+    "Itching",
+    "Skin Rash",
+    "Fatigue",
+    "Lethargy",
+    "High Fever",
+    "Headache",
+    "Loss Of Appetite",
+    "Mild Fever",
+    "Swelled Lymph Nodes",
+    "Malaise",
+    "Red Spots Over Body"
+  ],
+  "Dengue": [
+    "Skin Rash",
+    "Chills",
+    "Joint Pain",
+    "Vomiting",
+    "Fatigue",
+    "High Fever",
+    "Headache",
+    "Nausea",
+    "Loss Of Appetite",
+    "Pain Behind The Eyes",
+    "Back Pain",
+    "Malaise",
+    "Muscle Pain",
+    "Red Spots Over Body"
+  ],
+  "Typhoid": [
+    "Chills",
+    "Vomiting",
+    "Fatigue",
+    "High Fever",
+    "Headache",
+    "Nausea",
+    "Constipation",
+    "Abdominal Pain",
+    "Diarrhoea",
+    "Toxic Look Typhos",
+    "Belly Pain"
+  ],
+  "hepatitis A": [
+    "Joint Pain",
+    "Vomiting",
+    "Yellowish Skin",
+    "Dark Urine",
+    "Nausea",
+    "Loss Of Appetite",
+    "Abdominal Pain",
+    "Diarrhoea",
+    "Mild Fever",
+    "Yellowing Of Eyes",
+    "Muscle Pain"
+  ],
+  "Hepatitis B": [
+    "Itching",
+    "Fatigue",
+    "Lethargy",
+    "Yellowish Skin",
+    "Dark Urine",
+    "Loss Of Appetite",
+    "Abdominal Pain",
+    "Yellow Urine",
+    "Yellowing Of Eyes",
+    "Malaise",
+    "Receiving Blood Transfusion",
+    "Receiving Unsterile Injections"
+  ],
+  "Hepatitis C": [
+    "Fatigue",
+    "Yellowish Skin",
+    "Nausea",
+    "Loss Of Appetite",
+    "Yellowing Of Eyes",
+    "Family History"
+  ],
+  "Hepatitis D": [
+    "Joint Pain",
+    "Vomiting",
+    "Fatigue",
+    "Yellowish Skin",
+    "Dark Urine",
+    "Nausea",
+    "Loss Of Appetite",
+    "Abdominal Pain",
+    "Yellowing Of Eyes"
+  ],
+  "Hepatitis E": [
+    "Joint Pain",
+    "Vomiting",
+    "Fatigue",
+    "High Fever",
+    "Yellowish Skin",
+    "Dark Urine",
+    "Nausea",
+    "Loss Of Appetite",
+    "Abdominal Pain",
+    "Yellowing Of Eyes",
+    "Acute Liver Failure",
+    "Coma",
+    "Stomach Bleeding"
+  ],
+  "Alcoholic hepatitis": [
+    "Vomiting",
+    "Yellowish Skin",
+    "Abdominal Pain",
+    "Swelling Of Stomach",
+    "Distention Of Abdomen",
+    "History Of Alcohol Consumption",
+    "Fluid Overload"
+  ],
+  "Tuberculosis": [
+    "Chills",
+    "Vomiting",
+    "Fatigue",
+    "Weight Loss",
+    "Cough",
+    "High Fever",
+    "Breathlessness",
+    "Sweating",
+    "Loss Of Appetite",
+    "Mild Fever",
+    "Yellowing Of Eyes",
+    "Swelled Lymph Nodes",
+    "Malaise",
+    "Phlegm",
+    "Chest Pain",
+    "Blood In Sputum"
+  ],
+  "Common Cold": [
+    "Continuous Sneezing",
+    "Chills",
+    "Fatigue",
+    "Cough",
+    "High Fever",
+    "Headache",
+    "Swelled Lymph Nodes",
+    "Malaise",
+    "Phlegm",
+    "Throat Irritation",
+    "Redness Of Eyes",
+    "Sinus Pressure",
+    "Runny Nose",
+    "Congestion",
+    "Chest Pain",
+    "Loss Of Smell",
+    "Muscle Pain"
+  ],
+  "Pneumonia": [
+    "Chills",
+    "Fatigue",
+    "Cough",
+    "High Fever",
+    "Breathlessness",
+    "Sweating",
+    "Malaise",
+    "Phlegm",
+    "Chest Pain",
+    "Fast Heart Rate",
+    "Rusty Sputum"
+  ],
+  "Dimorphic hemmorhoids(piles)": [
+    "Constipation",
+    "Pain During Bowel Movements",
+    "Pain In Anal Region",
+    "Bloody Stool",
+    "Irritation In Anus"
+  ],
+  "Heart attack": [
+    "Vomiting",
+    "Breathlessness",
+    "Sweating",
+    "Chest Pain"
+  ],
+  "Varicose veins": [
+    "Fatigue",
+    "Cramps",
+    "Bruising",
+    "Obesity",
+    "Swollen Legs",
+    "Swollen Blood Vessels",
+    "Prominent Veins On Calf"
+  ],
+  "Hypothyroidism": [
+    "Fatigue",
+    "Weight Gain",
+    "Cold Hands And Feets",
+    "Mood Swings",
+    "Lethargy",
+    "Dizziness",
+    "Puffy Face And Eyes",
+    "Enlarged Thyroid",
+    "Brittle Nails",
+    "Swollen Extremeties",
+    "Depression",
+    "Irritability",
+    "Abnormal Menstruation"
+  ],
+  "Hyperthyroidism": [
+    "Fatigue",
+    "Mood Swings",
+    "Weight Loss",
+    "Restlessness",
+    "Sweating",
+    "Diarrhoea",
+    "Fast Heart Rate",
+    "Excessive Hunger",
+    "Muscle Weakness",
+    "Irritability",
+    "Abnormal Menstruation"
+  ],
+  "Hypoglycemia": [
+    "Vomiting",
+    "Fatigue",
+    "Anxiety",
+    "Sweating",
+    "Headache",
+    "Nausea",
+    "Blurred And Distorted Vision",
+    "Excessive Hunger",
+    "Drying And Tingling Lips",
+    "Slurred Speech",
+    "Irritability",
+    "Palpitations"
+  ],
+  "Osteoarthristis": [
+    "Joint Pain",
+    "Neck Pain",
+    "Knee Pain",
+    "Hip Joint Pain",
+    "Swelling Joints",
+    "Painful Walking"
+  ],
+  "Arthritis": [
+    "Muscle Weakness",
+    "Stiff Neck",
+    "Swelling Joints",
+    "Movement Stiffness",
+    "Painful Walking"
+  ],
+  "(vertigo) Paroymsal  Positional Vertigo": [
+    "Vomiting",
+    "Headache",
+    "Nausea",
+    "Spinning Movements",
+    "Loss Of Balance",
+    "Unsteadiness"
+  ],
+  "Acne": [
+    "Skin Rash",
+    "Pus Filled Pimples",
+    "Blackheads",
+    "Scurring"
+  ],
+  "Urinary tract infection": [
+    "Burning Micturition",
+    "Bladder Discomfort",
+    "Foul Smell Of Urine",
+    "Continuous Feel Of Urine"
+  ],
+  "Psoriasis": [
+    "Skin Rash",
+    "Joint Pain",
+    "Skin Peeling",
+    "Silver Like Dusting",
+    "Small Dents In Nails",
+    "Inflammatory Nails"
+  ],
+  "Impetigo": [
+    "Skin Rash",
+    "High Fever",
+    "Blister",
+    "Red Sore Around Nose",
+    "Yellow Crust Ooze"
+  ]
 };
 
 const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
   "Fungal infection": [
+    "🏥 Visit a skin specialist if no improvement in 5 days",
     "🧼 Keep the affected area clean and dry",
     "💊 Apply anti-fungal cream as prescribed",
     "👕 Wear loose, breathable cotton clothes",
     "❌ Avoid sharing towels or personal items",
-    "🏥 Visit a skin specialist if no improvement in 5 days",
     "💧 Wash the area with clean boiled water daily"
   ],
   "Allergy": [
+    "🏥 Consult a doctor for allergy testing",
     "❌ Identify and avoid your allergy triggers",
     "💊 Take prescribed antihistamines",
-    "🏥 Consult a doctor for allergy testing",
     "🧼 Keep your living area dust-free",
     "😷 Wear a mask outdoors during high pollen season",
     "📊 Keep a diary to track allergy episodes"
   ],
   "GERD": [
+    "🏥 Consult a gastroenterologist if symptoms persist",
     "❌ Avoid spicy, oily, and acidic foods",
     "🍽️ Eat smaller meals more frequently",
     "🛏️ Do not lie down immediately after eating",
     "💊 Take prescribed antacids after meals",
-    "🏥 Consult a gastroenterologist if symptoms persist",
     "💧 Drink warm water instead of cold beverages"
   ],
   "Chronic cholestasis": [
+    "🏥 Consult a hepatologist regularly",
     "🍽️ Eat a low-fat, high-fiber diet",
     "❌ Avoid alcohol completely",
     "💊 Take prescribed vitamin supplements (A, D, E, K)",
-    "🏥 Consult a hepatologist regularly",
     "📊 Get regular liver function tests done",
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Drug Reaction": [
-    "❌ Stop taking the suspected medication immediately",
     "🏥 Consult your doctor or go to nearest clinic",
+    "❌ Stop taking the suspected medication immediately",
     "💧 Drink plenty of boiled or filtered water",
     "📊 Keep a written record of the reaction and medicine name",
     "💊 Do not take any new medicine without doctor advice",
     "🚨 If breathing difficulty or swelling — go to emergency immediately"
   ],
   "Peptic ulcer disease": [
+    "🏥 Consult a gastroenterologist for proper treatment",
     "❌ Avoid spicy foods, alcohol, and smoking",
     "🍽️ Eat smaller, more frequent meals",
     "💊 Take prescribed antacids or PPIs on time",
     "🛏️ Manage stress with rest and light activity",
-    "🏥 Consult a gastroenterologist for proper treatment",
     "💧 Drink warm water and avoid carbonated drinks"
   ],
   "AIDS": [
+    "🏥 Get regular CD4 count and viral load tests",
     "💊 Follow antiretroviral therapy (ART) strictly — never skip doses",
     "🍽️ Maintain a balanced, nutritious diet",
-    "🏥 Get regular CD4 count and viral load tests",
     "🧼 Practice strict hygiene to avoid infections",
     "👪 Inform close family and seek emotional support",
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Diabetes": [
+    "🏥 Get HbA1c test every 3 months",
     "📊 Monitor blood sugar levels regularly",
     "🍽️ Follow a low-sugar, low-carb balanced diet",
     "🚶 Exercise for at least 30 minutes daily",
     "💊 Take prescribed insulin or medications on time",
-    "🏥 Get HbA1c test every 3 months",
     "👁️ Get regular eye and foot checkups"
   ],
   "Gastroenteritis": [
+    "🏥 See a doctor if vomiting or diarrhea lasts more than 2 days",
     "💧 Take ORS (oral rehydration salts) frequently to prevent dehydration",
     "🛌 Rest your stomach and avoid heavy food",
     "🍽️ Eat bland foods like khichri, plain rice, and bananas",
     "❌ Avoid dairy, oily food, and caffeine",
-    "🏥 See a doctor if vomiting or diarrhea lasts more than 2 days",
     "🧼 Wash hands thoroughly before eating"
   ],
   "Bronchial Asthma": [
+    "🏥 Visit your doctor for regular checkups",
     "💊 Always carry your prescribed inhaler",
     "😷 Avoid smoke, dust, and strong smells",
-    "🏥 Visit your doctor for regular checkups",
     "🧼 Keep your home clean and dust-free",
     "🛌 Practice breathing exercises daily",
     "📊 Track your peak flow readings regularly"
   ],
   "Hypertension": [
+    "🏥 Consult a doctor for proper diagnosis and treatment",
     "🍽️ Reduce salt intake significantly",
     "🚶 Exercise regularly — brisk walk for 30 minutes daily",
     "🛌 Manage stress with relaxation techniques",
@@ -177,19 +540,19 @@ const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
     "❌ Avoid smoking and alcohol completely"
   ],
   "Migraine": [
+    "🏥 Consult a neurologist if migraines are frequent",
     "🛌 Rest in a dark, quiet room during an attack",
     "❌ Identify and avoid personal triggers (food, stress, screen time)",
     "💧 Stay well-hydrated throughout the day",
     "💊 Take prescribed migraine medication at onset",
-    "📊 Keep a migraine diary to find patterns",
-    "🏥 Consult a neurologist if migraines are frequent"
+    "📊 Keep a migraine diary to find patterns"
   ],
   "Cervical spondylosis": [
+    "🏥 Consult an orthopedic specialist",
     "🚶 Do regular neck stretching exercises",
     "🛌 Maintain good posture while sitting and sleeping",
     "💊 Apply prescribed pain relief gel or take medication",
     "🔥 Apply warm packs to the neck for relief",
-    "🏥 Consult an orthopedic specialist",
     "❌ Avoid prolonged screen use without breaks"
   ],
   "Paralysis (brain hemorrhage)": [
@@ -201,52 +564,52 @@ const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Jaundice": [
+    "🏥 Get liver function tests done immediately",
     "💧 Drink plenty of fluids — boiled water, nimbu pani, and fresh juices",
     "🍽️ Eat a carbohydrate-rich, low-fat diet",
     "❌ Avoid alcohol and oily foods completely",
     "🛌 Rest adequately and avoid physical exertion",
-    "🏥 Get liver function tests done immediately",
     "📊 Monitor eye and skin color changes daily"
   ],
   "Malaria": [
+    "⚠️ Yeh serious condition hai — doctor se foran rabta karain",
     "💊 Take full course of prescribed antimalarial drugs",
     "🛌 Rest completely — do not exert yourself",
     "💧 Drink ORS and plenty of fluids to stay hydrated",
     "🦟 Sleep under mosquito nets and use repellent",
-    "📊 Monitor temperature every 4 hours",
-    "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
+    "📊 Monitor temperature every 4 hours"
   ],
   "Chicken pox": [
+    "🏥 Consult a doctor if fever goes above 103°F",
     "💊 Apply calamine lotion to soothe itching",
     "🧼 Trim nails short to prevent scratching and infection",
     "🛌 Rest and stay isolated to avoid spreading",
     "💧 Stay well-hydrated with fluids and ORS",
-    "🍽️ Eat soft, easy-to-digest food",
-    "🏥 Consult a doctor if fever goes above 103°F"
+    "🍽️ Eat soft, easy-to-digest food"
   ],
   "Dengue": [
+    "📊 Monitor platelet count daily at a clinic",
     "💧 Drink lots of fluids — coconut water, ORS, and fresh juice",
     "🛌 Rest completely — avoid all physical activity",
-    "📊 Monitor platelet count daily at a clinic",
     "💊 Take paracetamol for fever — avoid aspirin and ibuprofen",
     "🦟 Use mosquito nets and repellent to prevent spreading",
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Typhoid": [
+    "🏥 Get Widal test confirmed by a doctor",
     "💊 Take the complete prescribed antibiotic course — never skip",
     "💧 Drink only boiled or filtered water",
     "🍽️ Eat bland, easily digestible food like khichri and soup",
     "🧼 Wash hands thoroughly before meals and after toilet",
-    "🏥 Get Widal test confirmed by a doctor",
     "📊 Monitor body temperature every 4-6 hours"
   ],
   "hepatitis A": [
+    "⚠️ Yeh serious condition hai — doctor se foran rabta karain",
     "🛌 Rest completely during the illness",
     "🍽️ Eat small, frequent, nutritious meals",
     "❌ Avoid alcohol completely",
     "🧼 Practice strict personal hygiene — wash hands frequently",
-    "💧 Drink only boiled or bottled water",
-    "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
+    "💧 Drink only boiled or bottled water"
   ],
   "Hepatitis B": [
     "🏥 Consult a hepatologist immediately",
@@ -257,9 +620,9 @@ const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Hepatitis C": [
+    "🏥 Get vaccinated for Hepatitis A and B",
     "💊 Follow prescribed antiviral medication course strictly",
     "❌ Avoid alcohol completely",
-    "🏥 Get vaccinated for Hepatitis A and B",
     "📊 Get regular liver monitoring and ultrasound",
     "🧼 Do not share razors, needles, or personal items",
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
@@ -273,52 +636,52 @@ const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Hepatitis E": [
+    "⚠️ Yeh serious condition hai — doctor se foran rabta karain",
     "🛌 Rest completely during the illness",
     "💧 Drink only boiled or bottled water — avoid tap water",
     "🍽️ Eat a healthy, balanced diet",
     "❌ Avoid alcohol completely",
-    "🧼 Wash hands before eating and after using toilet",
-    "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
+    "🧼 Wash hands before eating and after using toilet"
   ],
   "Alcoholic hepatitis": [
-    "❌ Stop drinking alcohol completely and immediately",
     "🏥 Consult a hepatologist without delay",
+    "❌ Stop drinking alcohol completely and immediately",
     "🍽️ Eat a high-protein, nutrient-rich diet",
     "💊 Take prescribed medications and vitamin supplements",
     "👪 Seek support from family or an addiction counselor",
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Tuberculosis": [
+    "🏥 Register at your nearest TB clinic for free treatment",
     "💊 Take the full TB DOTS medication course — never miss a dose",
     "😷 Cover mouth and nose when coughing or sneezing",
     "🏠 Ensure good ventilation and sunlight in your home",
     "🍽️ Eat a protein-rich diet — eggs, daal, meat",
-    "🏥 Register at your nearest TB clinic for free treatment",
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Common Cold": [
+    "🏥 See a doctor if cold lasts more than 7 days",
     "🛌 Rest and stay warm",
     "💧 Drink warm fluids like green tea, soup, and warm water",
     "🧼 Gargle with warm salt water twice daily",
     "💊 Use saline nasal drops to clear congestion",
-    "😷 Wear a mask to avoid spreading to others",
-    "🏥 See a doctor if cold lasts more than 7 days"
+    "😷 Wear a mask to avoid spreading to others"
   ],
   "Pneumonia": [
+    "🏥 Get a chest X-ray to confirm and monitor recovery",
     "💊 Take prescribed antibiotics — complete the full course",
     "🛌 Get complete bed rest",
     "💧 Drink warm fluids — soup, herbal tea, warm water",
-    "🏥 Get a chest X-ray to confirm and monitor recovery",
     "📊 Monitor oxygen levels and breathing regularly",
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Dimorphic hemmorhoids(piles)": [
+    "🏥 Consult a surgeon if pain or bleeding persists",
     "🍽️ Eat a high-fiber diet — fruits, vegetables, daal",
     "💧 Drink at least 8 glasses of water daily",
     "❌ Do not strain during bowel movements",
     "🛁 Take warm water sitz baths twice daily for relief",
-    "🚶 Walk for 20-30 minutes daily to improve digestion",
-    "🏥 Consult a surgeon if pain or bleeding persists"
+    "🚶 Walk for 20-30 minutes daily to improve digestion"
   ],
   "Heart attack": [
     "🚨 Call 115 (Pakistan Emergency) immediately",
@@ -329,35 +692,35 @@ const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
     "⚠️ Yeh serious condition hai — doctor se foran rabta karain"
   ],
   "Varicose veins": [
+    "💊 Wear prescribed medical compression bandages",
     "🛌 Elevate your legs above heart level when resting",
     "🚶 Exercise regularly — walking and swimming are ideal",
     "❌ Avoid standing or sitting for long periods without movement",
-    "💊 Wear prescribed medical compression bandages",
     "🍽️ Maintain a healthy weight through balanced diet",
     "🏥 Consult a vascular surgeon for assessment"
   ],
   "Hypothyroidism": [
+    "🏥 See an endocrinologist for proper management",
     "💊 Take thyroid hormone replacement medication daily as prescribed",
     "🍽️ Eat a balanced diet rich in iodine (fish, iodized salt)",
     "🚶 Exercise regularly to manage weight and energy",
     "📊 Get thyroid (TSH) blood tests regularly",
-    "🏥 See an endocrinologist for proper management",
     "❌ Do not skip medication — even if you feel better"
   ],
   "Hyperthyroidism": [
+    "🏥 Consult an endocrinologist for proper treatment",
     "💊 Take prescribed anti-thyroid medications regularly",
     "❌ Avoid excess iodine — limit seafood and iodized salt",
     "🛌 Manage stress with rest and relaxation",
     "📊 Get regular thyroid function tests (T3, T4, TSH)",
-    "🏥 Consult an endocrinologist for proper treatment",
     "❌ Avoid caffeine and stimulants which worsen symptoms"
   ],
   "Hypoglycemia": [
+    "🏥 Consult a doctor to adjust your diabetes medication",
     "🍽️ Consume fast-acting carbs immediately — fruit juice, sugar, glucose tablet",
     "🍽️ Eat regular meals — never skip breakfast",
     "📊 Monitor blood sugar levels regularly",
     "🍬 Always carry a sugary snack like candy or biscuits",
-    "🏥 Consult a doctor to adjust your diabetes medication",
     "👪 Inform family members about emergency glucose treatment"
   ],
   "Osteoarthristis": [
@@ -369,8 +732,8 @@ const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
     "👟 Use supportive footwear and orthotics if recommended"
   ],
   "Arthritis": [
-    "🚶 Stay physically active with gentle exercises",
     "🏥 Consult a rheumatologist for proper medication",
+    "🚶 Stay physically active with gentle exercises",
     "🔥 Apply warm or cold packs to inflamed joints",
     "💊 Follow prescribed medication plan strictly",
     "🍽️ Maintain a healthy weight with balanced diet",
@@ -385,35 +748,35 @@ const DISEASE_RECOMMENDATIONS: Record<string, string[]> = {
     "📊 Keep a record of vertigo episodes to share with doctor"
   ],
   "Acne": [
+    "🏥 See a dermatologist for prescription treatment if severe",
     "🧼 Wash face twice daily with a gentle, fragrance-free cleanser",
     "❌ Do not pop or squeeze pimples",
     "💊 Use non-comedogenic, oil-free skin products",
     "🍽️ Reduce oily and sugary foods in your diet",
-    "💧 Drink plenty of water daily for clear skin",
-    "🏥 See a dermatologist for prescription treatment if severe"
+    "💧 Drink plenty of water daily for clear skin"
   ],
   "Urinary tract infection": [
+    "🏥 Get a urine culture test to confirm the infection",
     "💧 Drink at least 2-3 liters of water daily",
     "💊 Take the full prescribed antibiotic course",
     "🚽 Urinate frequently — do not hold urine",
     "🧼 Maintain proper hygiene — wipe front to back",
-    "❌ Avoid spicy food and carbonated drinks",
-    "🏥 Get a urine culture test to confirm the infection"
+    "❌ Avoid spicy food and carbonated drinks"
   ],
   "Psoriasis": [
+    "🏥 Consult a dermatologist for advanced treatment options",
     "💊 Moisturize skin daily with prescribed cream",
     "❌ Identify and avoid personal triggers (stress, certain foods)",
     "☀️ Get moderate sunlight exposure daily",
     "💊 Follow prescribed topical treatments strictly",
-    "🧼 Use mild, fragrance-free soaps and shampoos",
-    "🏥 Consult a dermatologist for advanced treatment options"
+    "🧼 Use mild, fragrance-free soaps and shampoos"
   ],
   "Impetigo": [
+    "🏥 See a doctor if sores spread or do not heal in 3 days",
     "🧼 Gently wash sores with soap and clean water twice daily",
     "💊 Apply prescribed antibiotic ointment on sores",
     "❌ Do not share towels, clothes, or bedding with others",
     "🩹 Keep sores covered with clean bandage",
-    "🏥 See a doctor if sores spread or do not heal in 3 days",
     "👕 Wash clothing and bedding in hot water daily"
   ]
 };
@@ -617,7 +980,10 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
   const [apiOnline, setApiOnline] = useState(true);
   const [activeTab, setActiveTab] = useState<'analysis' | 'symptoms' | 'recommendations'>('analysis');
   const [inputError, setInputError] = useState('');
-  const [uiLanguage, setUiLanguage] = useState<'urdu' | 'roman' | 'english'>('roman');
+  const [uiLanguage, setUiLanguage] = useState<'urdu' | 'roman' | 'english'>(() => {
+    const saved = localStorage.getItem('sehat_ui_language');
+    return (saved as 'urdu' | 'roman' | 'english') || 'roman';
+  });
   const uiLanguageRef = useRef<'urdu' | 'roman' | 'english'>('roman'); // ref for use inside callbacks
   const [selectedDisease, setSelectedDisease] = useState<string | null>(null);
 
@@ -651,9 +1017,10 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
   const [readyToAnalyze, setReadyToAnalyze] = useState(false);
 
 
-  // Keep uiLanguageRef in sync
+  // Keep uiLanguageRef in sync and persist to localStorage
   useEffect(() => {
     uiLanguageRef.current = uiLanguage;
+    localStorage.setItem('sehat_ui_language', uiLanguage);
   }, [uiLanguage]);
 
   // Voice Output State
@@ -1702,6 +2069,7 @@ export default function ChatInterface({ historyItems: _historyItems, onHistoryUp
                 {[
                   { key: 'roman_urdu' as const, label: 'Roman Urdu', uiKey: 'roman' as const },
                   { key: 'english' as const, label: 'English',    uiKey: 'english' as const },
+
                   { key: 'urdu' as const,    label: 'اردو',       uiKey: 'urdu' as const },
                 ].map(lang => (
                   <button

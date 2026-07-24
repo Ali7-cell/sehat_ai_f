@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, MessageSquare, History, Home, Info } from 'lucide-react';
+import { Moon, Sun, MessageSquare, History, Home, Info, ClipboardList } from 'lucide-react';
 
 interface NavigationProps {
   theme: 'dark' | 'light';
@@ -19,10 +19,11 @@ export default function Navigation({ theme, toggleTheme, onNavigate }: Navigatio
   }, []);
 
   const navLinks = [
-    { id: 'hero',        label: 'Home',    icon: Home },
-    { id: 'chat',        label: 'Chat',    icon: MessageSquare },
-    { id: 'history',     label: 'History', icon: History },
-    { id: 'specialties', label: 'About',   icon: Info },
+    { id: 'hero',        label: 'Home',      icon: Home },
+    { id: 'chat',        label: 'Chat',      icon: MessageSquare },
+    { id: 'diseases',    label: 'Diseases',  icon: ClipboardList },
+    { id: 'history',     label: 'History',   icon: History },
+    { id: 'specialties', label: 'About',     icon: Info },
   ];
 
   const isDark = theme === 'dark';
